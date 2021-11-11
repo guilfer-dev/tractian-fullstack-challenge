@@ -3,7 +3,7 @@ import UnitController from "../controllers/UnitController.js";
 
 const route = Router();
 
-route.post('/', UnitController.create);
+route.post('/:companyId', UnitController.create);
 route.get('/', UnitController.index);
 route.get('/:id', UnitController.show);
 route.put('/:id', UnitController.update);

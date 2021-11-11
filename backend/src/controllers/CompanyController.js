@@ -20,7 +20,7 @@ export default {
                     if (err) {
                         res.json({
                             err,
-                            msg: "Unable to create the company, try again later."
+                            msg: "Unable to create the company."
                         })
                     } else {
                         res.json({

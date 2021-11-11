@@ -1,6 +1,5 @@
 import User from "../models/UserModel.js";
-import Company from "../models/CompanyModel.js";
-import { compareData, hashData } from "../helpers/cripto.js"
+import { compareData } from "../helpers/cripto.js"
 
 
 export default {
@@ -8,12 +7,14 @@ export default {
     index: async (req, res) => {
 
         try {
-            const users = await User.find({}).select("-password -__v").populate("company", "-__v -users")
+            const users = await User.find({})
+                .select("-password -__v")
+                .populate("company", "-__v -users -units");
 
             res.json(users);
         }
         catch (err) {
-            res.json({ msg: "Unable to list users now." });
+            res.json({ msg: "Unable to list users." });
         }
     },
 
@@ -21,21 +22,19 @@ export default {
 
         const { id } = req.params
 
-        User.findById(id,
-            (err, data) => {
-                if (err) {
-                    res.json({
-                        msg: "Unable to locate the user."
-                    })
-                } else {
-                    res.json({
-                        _id: data._id,
-                        name: data.name,
-                        company: data.company
+        try {
+            const user = await User.findById(id)
+                .select("-password -__v")
+                .populate("company", "-__v -users -units");
 
-                    })
-                }
-            }).populate("company", "-__v -users")
+            res.json(user);
+        }
+        catch (err) {
+            res.json({
+                err,
+                msg: "Unable to locate the user."
+            });
+        }
     },
 
     update: async (req, res) => {
@@ -43,14 +42,16 @@ export default {
         const { id } = req.params
         const { newName, password } = req.body
 
+        if (!newName) return res.json({ msg: "New name is required to this action." });
+
         try {
             const user = await User.findById(id);
-
             if (user.name === newName) {
                 res.json({
                     msg: "New name is the same as the previous."
                 });
-            } else if (await compareData(password, user.password)) {
+            }
+            else if (await compareData(password, user.password)) {
                 user.name = newName;
                 await user.save();
                 res.json({
@@ -73,18 +74,16 @@ export default {
 
     delete: async (req, res) => {
 
-        const { id } = req.params
+        const { id } = req.params;
 
-        User.findByIdAndRemove(id,
-            (err) => {
-                if (err) {
-                    res.json({
-                        msg: "Unable to locate the company, try again later."
-                    })
-                } else {
-                    res.json("User sucessfuly removed.")
-                }
-            })
-
+        try {
+            await User.findByIdAndRemove(id);
+            res.json("User sucessfuly removed.");
+        }
+        catch (err) {
+            res.json({
+                msg: "Unable to locate the company, try again later."
+            });
+        }
     },
 }
