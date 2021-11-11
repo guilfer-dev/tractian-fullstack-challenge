@@ -21,9 +21,8 @@ app.use("/companies", CompanyRoutes);
 app.use("/units", UnitRoutes);
 app.use("/assets", AssetRoutes);
 
-
 mongoose.connect(process.env.MONGO_AUTH + '/tractian')
-    .then(console.log("Database connection Success."))
-    .catch(e => console.error("Mongo Connection Error", err));
+    .then(console.log("Database connection: Success"))
+    .catch(e => console.error("Database connection: Error", err));
 
-app.listen(port, console.log(`Connected to port :${port}`));
+app.listen(port, console.log(`Server available on port :${port}`));

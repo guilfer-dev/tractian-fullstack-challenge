@@ -6,29 +6,20 @@ export default {
     create: async (req, res) => {
 
         const { name } = req.body;
-        const company = await Company.findOne({ name })
-        
-        if (!name) {
-            res.status(404);
-        } else if (company) {
-            res.json({ message: "This company already exists." })
-        } else {
-            Company.create({
-                name
-            },
-                (err, data) => {
-                    if (err) {
-                        res.json({
-                            err,
-                            msg: "Unable to create the company."
-                        })
-                    } else {
-                        res.json({
-                            id: data._id,
-                            name: data.name
-                        })
-                    }
-                })
+        if (!name) return res.json({ message: "Provide the name of the new company" });
+
+        const companyInDB = await Company.findOne({ name });
+        if (companyInDB) return res.json({ message: "This company already exists." });
+
+        try {
+            const company = await Company.create({ name });
+            res.json(company)
+        }
+        catch (err) {
+            res.json({
+                err,
+                msg: "Unable to create the company."
+            })
         }
     },
 

@@ -10,8 +10,8 @@ const CompanySchema = new mongoose.Schema({
     },
     units: [UnitSchema],
     users: [{
-        type: mongoose.Schema.Types.ObjectId, ref: 'User',
-        unique: true
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
     }],
 })
 

@@ -42,13 +42,13 @@ export default {
         const { id } = req.params
         const { newName, password } = req.body
 
-        if (!newName) return res.json({ msg: "New name is required to this action." });
+        if (!newName) return res.json({ msg: "Provide the new name for the user." });
 
         try {
             const user = await User.findById(id);
             if (user.name === newName) {
                 res.json({
-                    msg: "New name is the same as the previous."
+                    msg: "New name is the same as previous."
                 });
             }
             else if (await compareData(password, user.password)) {
@@ -56,18 +56,18 @@ export default {
                 await user.save();
                 res.json({
                     name: newName,
-                    msg: `New user name sucessfuly updated`
+                    msg: `User name sucessfuly updated`
                 });
             } else {
                 res.json({
-                    msg: "Unable to update the name of the user."
+                    msg: "Unable to change the name of the user."
                 });
             }
         }
         catch (err) {
             console.log(err)
             res.json({
-                msg: "Unable to update the name of the user."
+                msg: "Unable to change the name of the user."
             })
         }
     },
@@ -82,7 +82,7 @@ export default {
         }
         catch (err) {
             res.json({
-                msg: "Unable to locate the company, try again later."
+                msg: "Unable to locate the user."
             });
         }
     },

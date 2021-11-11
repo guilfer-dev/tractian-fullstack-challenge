@@ -7,20 +7,19 @@ export default {
     create: async (req, res) => {
 
         const { name } = req.body;
-        if (!name) return res.status(404);
+        if (!name) return res.json({ message: "Provide the name of the new company" });
 
-        const unitInDB = await Company.find({ "units.name": name });
-        if (unitInDB[0]) return res.json({ message: "This unit already exists in this company." })
+        const unitInDB = await Company.findOne({ "units.name": name });
+        if (unitInDB) return res.json({ message: "This unit already exists in this company." })
 
         try {
             const company = await Company.findById(req.params.companyId);
             const unit = new Unit({ name });
+
             company.units.push(unit);
             await company.save();
-            res.json({
-                _id: unit._id,
-                name: unit.name
-            });
+
+            res.json(unit);
         }
         catch (err) {
             res.json({
