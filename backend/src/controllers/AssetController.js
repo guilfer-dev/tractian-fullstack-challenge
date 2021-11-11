@@ -14,6 +14,7 @@ export default {
             owner,
             status,
             healthLevel } = req.body;
+
         if (!name) return res.json({ message: "Provide the name of the new company" });
 
         const assetInDB = await Company.findOne({ "units.assets.name": name });

@@ -46,7 +46,5 @@ export default {
 
     login: async (req, res) => { },
 
-    reset: async (req, res) => { },
-
     logout: async (req, res) => { },
 }
