@@ -24,13 +24,18 @@ const AssetSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ['Running', 'Alerting', 'Stopped']
+        enum: ['running', 'alerting', 'stopped']
     },
     healthLevel: {
         type: Number,
         min: 0,
         max: 100
     },
+    unit: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Unit',
+        required: true
+    }
 
 })
 

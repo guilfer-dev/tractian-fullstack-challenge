@@ -3,10 +3,10 @@ import UnitController from "../controllers/UnitController.js";
 
 const route = Router();
 
-route.post('/:companyId', UnitController.create);
-route.get('/', UnitController.index);
-route.get('/:id', UnitController.show);
-route.put('/:id', UnitController.update);
-route.delete('/:id', UnitController.delete);
+route.post('/companies/:companyName', UnitController.create);
+route.get('/units', UnitController.index);
+route.get('/units/:id', UnitController.show);
+route.put('/units/:id', UnitController.update);
+route.delete('/units/:id', UnitController.delete);
 
 export default route;

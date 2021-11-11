@@ -6,6 +6,8 @@ export default {
 
     create: async (req, res) => {
 
+        const { companyName } = req.params;
+
         const { name } = req.body;
         if (!name) return res.json({ message: "Provide the name of the new company" });
 
@@ -13,7 +15,7 @@ export default {
         if (unitInDB) return res.json({ message: "This unit already exists in this company." })
 
         try {
-            const company = await Company.findById(req.params.companyId);
+            const company = await Company.findOne({ name: companyName });
             const unit = new Unit({ name });
 
             company.units.push(unit);

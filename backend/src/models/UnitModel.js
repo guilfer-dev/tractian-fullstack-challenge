@@ -1,4 +1,3 @@
-import { AssetSchema } from './AssetModel.js'
 import mongoose from 'mongoose';
 
 const UnitSchema = new mongoose.Schema({
@@ -7,7 +6,10 @@ const UnitSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    asset: [AssetSchema]
+    assets: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Asset',
+    }],
 })
 
 export default mongoose.model('Unit', UnitSchema);

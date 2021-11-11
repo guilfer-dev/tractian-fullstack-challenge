@@ -12,14 +12,14 @@ import AssetRoutes from './routes/AssetRoutes.js'
 const port = process.env.PORT
 const app = express();
 
-app.use(cors());
 app.use(express.json());
+app.use(cors());
 
 app.use("/users", UserRoutes);
 app.use("/auth", AuthenticationRoutes);
 app.use("/companies", CompanyRoutes);
-app.use("/units", UnitRoutes);
-app.use("/assets", AssetRoutes);
+app.use("/", UnitRoutes);
+app.use("/", AssetRoutes);
 
 mongoose.connect(process.env.MONGO_AUTH + '/tractian')
     .then(console.log("Database connection: Success"))
