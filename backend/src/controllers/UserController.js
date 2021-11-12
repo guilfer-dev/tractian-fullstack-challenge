@@ -1,7 +1,5 @@
 import User from "../models/UserModel.js";
 import Company from "../models/CompanyModel.js";
-import { compareData } from "../helpers/cripto.js"
-
 
 export default {
 
@@ -38,13 +36,15 @@ export default {
 
         try {
             const users = await User.find({})
-                .select("-password -__v")
-                .populate("company", "-__v -users -units");
+                .select("-loginID -companies -__v")
 
-            res.json(users);
+            return res.json(users);
         }
         catch (err) {
-            res.json({ msg: "Unable to list users." });
+            return res.json({
+                err,
+                msg: "Unable to list users."
+            });
         }
     },
 
@@ -54,51 +54,15 @@ export default {
 
         try {
             const user = await User.findById(id)
-                .select("-password -__v")
-                .populate("company", "-__v -users -units");
+                .select("-loginID -companies -__v")
 
-            res.json(user);
+            return res.json(user);
         }
         catch (err) {
-            res.json({
+            return res.json({
                 err,
                 msg: "Unable to locate the user."
             });
-        }
-    },
-
-    update: async (req, res) => {
-
-        const { id } = req.params
-        const { newName, password } = req.body
-
-        if (!newName) return res.json({ msg: "Provide the new name for the user." });
-
-        try {
-            const user = await User.findById(id);
-            if (user.name === newName) {
-                res.json({
-                    msg: "New name is the same as previous."
-                });
-            }
-            else if (await compareData(password, user.password)) {
-                user.name = newName;
-                await user.save();
-                res.json({
-                    name: newName,
-                    msg: `User name sucessfuly updated`
-                });
-            } else {
-                res.json({
-                    msg: "Unable to change the name of the user."
-                });
-            }
-        }
-        catch (err) {
-            console.log(err)
-            res.json({
-                msg: "Unable to change the name of the user."
-            })
         }
     },
 
@@ -112,6 +76,7 @@ export default {
         }
         catch (err) {
             res.json({
+                err,
                 msg: "Unable to locate the user."
             });
         }
