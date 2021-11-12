@@ -16,15 +16,14 @@ export default {
 
         try {
             const loginID = Math.random().toString(36).slice(2).toUpperCase();
-            const user = User.create({
+            const user = await User.create({
                 name,
                 loginID,
                 company: companyOnDB._id
-            });
+            }).select("-__v");
             return res.json(user);
-
         }
-        catch {
+        catch (err) {
             return res.json({
                 err,
                 msg: "Unable to create user."

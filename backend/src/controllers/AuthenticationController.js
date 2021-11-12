@@ -13,13 +13,14 @@ export default {
         try {
             const user = await User.findOne({ loginID })
                 .select("-loginID -__v")
-                .populate("companies", " - __v");
+                .populate("company", "-__v -users -units");
 
             if (!user) return res.json({ message: "Invalid login ID ." });
             else return res.json(user);
 
         }
-        catch {
+        catch (err) {
+            console.log(err);
             return res.json({
                 err,
                 msg: "Unable to authorize user."

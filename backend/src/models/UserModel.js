@@ -14,10 +14,10 @@ const UserSchema = new mongoose.Schema({
         required: true
     },
 
-    companies: [{
+    company: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Company',
-    }]
+    }
 
 })
 
