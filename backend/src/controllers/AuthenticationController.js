@@ -10,8 +10,8 @@ export default {
 
         try {
             const user = await User.findOne({ loginID })
-                .select("-loginID -__v")
-                .populate("company", "-__v -users -units");
+                .select("name")
+                .populate("company", "name");
 
             if (!user) return res.json({ message: "Invalid login ID ." });
             else return res.json(user);

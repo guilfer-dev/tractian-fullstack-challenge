@@ -16,14 +16,15 @@ export default {
             if (!companyInDB) return res.json({ message: "This company does not exist." });
 
             const loginID = Math.random().toString(36).slice(2).toUpperCase();
-
             const user = await User.create({
                 name,
                 loginID,
                 company: companyInDB._id
             })
+
             companyInDB.users.push(user);
             await companyInDB.save();
+            
             return res.json({
                 _id: user._id,
                 loginID,
@@ -82,10 +83,10 @@ export default {
 
         try {
             await User.findByIdAndRemove(id);
-            res.json("User sucessfuly removed.");
+            return res.json("User sucessfuly removed.");
         }
         catch (err) {
-            res.json({
+            return res.json({
                 err,
                 msg: "Unable to locate the user."
             });
