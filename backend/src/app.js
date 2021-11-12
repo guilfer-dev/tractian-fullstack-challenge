@@ -21,7 +21,7 @@ app.use("/companies", CompanyRoutes);
 app.use("/", UnitRoutes);
 app.use("/", AssetRoutes);
 
-mongoose.connect(process.env.MONGO_AUTH + '/tractian')
+mongoose.connect(`${process.env.MONGO_AUTH}/tractian`)
     .then(console.log("Database connection: Success"))
     .catch(e => console.error("Database connection: Error", err));
 
