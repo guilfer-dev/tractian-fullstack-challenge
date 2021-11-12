@@ -5,31 +5,19 @@ const UserSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true,
-        unique: true
     },
 
-    role: {
+    loginID: {
         type: String,
-        enum: ["user", "admin"],
-        default: "user",
+        unique: true,
         required: true
     },
 
-    acessTokern: {
-        type: String,
-        default: null
-    },
-
-    password: {
-        type: String,
-        required: true
-    },
-
-    company: {
+    companies: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Company',
-        required: true
-    }
+    }]
+
 })
 
 export { UserSchema };
