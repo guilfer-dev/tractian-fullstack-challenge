@@ -3,6 +3,6 @@ import AuthenticationController from "../controllers/AuthenticationController.js
 
 const route = Router();
 
-route.post('/login', AuthenticationController.login);
+route.post('/', AuthenticationController.login);
 
 export default route;
