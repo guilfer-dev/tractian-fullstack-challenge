@@ -18,7 +18,6 @@ export default {
 
         }
         catch (err) {
-            console.log(err);
             return res.json({
                 err,
                 msg: "Unable to authorize user."
