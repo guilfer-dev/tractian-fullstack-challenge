@@ -10,6 +10,10 @@ const UnitSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Asset',
     }],
+    company: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Company',
+    },
 })
 
 export default mongoose.model('Unit', UnitSchema);

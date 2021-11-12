@@ -1,4 +1,3 @@
-import { UnitSchema } from './UnitModel.js'
 import mongoose from 'mongoose';
 
 const CompanySchema = new mongoose.Schema({
@@ -8,10 +7,15 @@ const CompanySchema = new mongoose.Schema({
         required: true,
         unique: true
     },
-    units: [UnitSchema],
+    units: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Unit',
+        unique: true
+    }],
     users: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
+        unique: true
     }],
 })
 

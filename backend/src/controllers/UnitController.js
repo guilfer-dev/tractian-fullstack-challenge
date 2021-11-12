@@ -6,25 +6,29 @@ export default {
 
     create: async (req, res) => {
 
-        const { companyName } = req.params;
-
-        const { name } = req.body;
+        const { name } = req.body; ''
         if (!name) return res.json({ message: "Provide the name of the new company" });
 
-        const unitInDB = await Company.findOne({ "units.name": name });
-        if (unitInDB) return res.json({ message: "This unit already exists in this company." })
+        const { companyName } = req.params;
 
         try {
-            const company = await Company.findOne({ name: companyName });
-            const unit = new Unit({ name });
+            const [company] = await Company.find({ "name": companyName }).populate("units");
 
+            const unitInDB = company.units.find(e => e.name === name);
+            if (unitInDB) return res.json({ message: "This unit already exists in this company." });
+
+            const unit = await Unit.create({ name, company: company._id });
             company.units.push(unit);
             await company.save();
 
-            res.json(unit);
+            return res.json({
+                _id: unit._id,
+                name: unit.name,
+            });
         }
         catch (err) {
-            res.json({
+            console.log(err);
+            return res.json({
                 err,
                 msg: "Unable to create the unit."
             })
@@ -34,11 +38,13 @@ export default {
     index: async (req, res) => {
 
         try {
-            const units = await Company.find({}).select("name units");
-            res.json(units);
+            const units = await Company.find({})
+                .select("name units")
+                .populate("units", "name");
+            return res.json(units);
         }
         catch (err) {
-            res.json({
+            return res.json({
                 err,
                 msg: "Unable to list units."
             });
@@ -50,11 +56,16 @@ export default {
         const { id } = req.params;
 
         try {
-            const company = await Company.findOne({ "units._id": id });
-            res.json(await company.units.id(id))
+            const unit = await Unit.findById(id)
+                .select("-__v")
+                .populate("company", "name");
+
+            if (!unit) return res.json({ msg: "This unit does not exist" });
+
+            return res.json(unit);
         }
         catch (err) {
-            res.json({
+            return res.json({
                 err,
                 msg: "Unable to locate the company."
             })
@@ -67,24 +78,19 @@ export default {
         const { newName } = req.body;
 
         try {
-            const company = await Company.findOne({ "units._id": id });
-            const unit = await company.units.id(id);
+            const unit = await Unit.findById(id)
 
-            if (unit.name === newName) {
-                res.json({ msg: "New name is the same as the previous." })
-            }
-            else {
-                unit.name = newName;
-                await unit.save();
-                res.json({
-                    name: newName,
-                    msg: `Name of the company sucessfuly updated`
-                });
-            }
+            if (unit.name === newName) return res.json({ msg: "New name is the same as the previous." });
+
+            unit.name = newName;
+            await unit.save();
+            return res.json({
+                name: newName,
+                msg: `Name of the company sucessfuly updated`
+            });
         }
         catch (err) {
-            console.log(err)
-            res.json({
+            return res.json({
                 err,
                 msg: "Unable to update the name of the company."
             })
@@ -96,18 +102,19 @@ export default {
         const { id } = req.params
 
         try {
-            const company = await Company.findOne({ "units._id": id });
-            if (!company) {
-                return res.json("Unit does not exist.");
-            }
-            else {
-                company.units.id(id).remove();
-                company.save();
-                res.json("Unit sucessfuly removed.");
-            }
+            const unit = await Unit.findByIdAndDelete(id);
+            if (!unit) return res.json("Unit does not exist.");
+            console.log(unit);
+
+            const company = await Company.findById(unit.company._id);
+            console.log(company);
+            company.units.pull(id);
+            await company.save();
+            return res.json("Unit sucessfuly removed.");
         }
         catch (err) {
-            res.json({
+            console.log(err);
+            return res.json({
                 err,
                 msg: "Unable to delete the unit."
             });
