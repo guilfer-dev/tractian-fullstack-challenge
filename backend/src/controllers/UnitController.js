@@ -104,10 +104,8 @@ export default {
         try {
             const unit = await Unit.findByIdAndDelete(id);
             if (!unit) return res.json("Unit does not exist.");
-            console.log(unit);
 
-            const company = await Company.findById(unit.company._id);
-            console.log(company);
+            const company = await Company.findById(unit.company);
             company.units.pull(id);
             await company.save();
             return res.json("Unit sucessfuly removed.");

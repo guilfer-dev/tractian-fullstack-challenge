@@ -1,4 +1,5 @@
 import Asset from "../models/AssetModel.js";
+import Unit from "../models/UnitModel.js";
 import Company from "../models/CompanyModel.js";
 
 
@@ -6,41 +7,35 @@ export default {
 
     create: async (req, res) => {
 
-        const { companyName, unitName } = req.params;
+        const { unitName } = req.params;
+
         const { name,
             image,
             description,
             model,
             owner,
             status,
-            healthLevel } = req.body;
-
-        if (!name) return res.json({ message: "Provide the name of the new company" });
-
-        const assetInDB = await Company.findOne({ "units.assets.name": name });
-        if (assetInDB) return res.json({ message: "This asset already exists in this unit." })
+            healthLevel } = req.fields;
 
         try {
-            const company = await Company.findOne({ "name": companyName });
-            const [{ _id: unitId }] = company.units.filter(e => e.name === unitName);
+            const unit = await Unit.findOne({ "name": unitName });
             const asset = await Asset.create({
                 name,
-                image,
+                imagePath: image,
                 description,
                 model,
                 owner,
                 status,
                 healthLevel,
-                unit: unitId
+                unit: unit._id
             });
 
-            company.units.id(unitId).assets.push(asset._id);
-            await company.save();
-            res.json(asset);
+            unit.assets.push(asset._id);
+            await unit.save();
+            return res.json(asset);
         }
         catch (err) {
-            console.log(err);
-            res.json({
+            return res.json({
                 err,
                 msg: "Unable to create the unit."
             })
@@ -50,11 +45,13 @@ export default {
     index: async (req, res) => {
 
         try {
-            const units = await Company.find({}).select("name units");
-            res.json(units);
+            const assets = await Asset.find({})
+                .select("-__v")
+                .populate("unit", "-assets -__v");
+            return res.json(assets);
         }
         catch (err) {
-            res.json({
+            return res.json({
                 err,
                 msg: "Unable to list units."
             });
@@ -66,11 +63,14 @@ export default {
         const { id } = req.params;
 
         try {
-            const company = await Company.findOne({ "units._id": id });
-            res.json(await company.units.id(id))
+            const assets = await Asset.findById(id)
+                .select("-__v")
+                .populate("unit", "-assets -__v")
+            return res.json(assets)
         }
         catch (err) {
-            res.json({
+            console.log(err);
+            return res.json({
                 err,
                 msg: "Unable to locate the company."
             })
@@ -80,27 +80,25 @@ export default {
     update: async (req, res) => {
 
         const { id } = req.params;
+
         const { newName } = req.body;
+        if (!newName) return res.json("New name is required.");
 
         try {
-            const company = await Company.findOne({ "units._id": id });
-            const unit = await company.units.id(id);
+            const asset = await Asset.findById(id)
 
-            if (unit.name === newName) {
-                res.json({ msg: "New name is the same as the previous." })
-            }
-            else {
-                unit.name = newName;
-                await unit.save();
-                res.json({
-                    name: newName,
-                    msg: `Name of the company sucessfuly updated`
-                });
-            }
+            if (asset.name === newName) return res.json({ msg: "New name is the same as the previous." });
+
+            asset.name = newName;
+            await asset.save();
+            return res.json({
+                name: newName,
+                msg: `Name of the company sucessfuly updated`
+            });
+
         }
         catch (err) {
-            console.log(err)
-            res.json({
+            return res.json({
                 err,
                 msg: "Unable to update the name of the company."
             })
@@ -112,18 +110,17 @@ export default {
         const { id } = req.params
 
         try {
-            const company = await Company.findOne({ "units._id": id });
-            if (!company) {
-                return res.json("Unit does not exist.");
-            }
-            else {
-                company.units.id(id).remove();
-                company.save();
-                res.json("Unit sucessfuly removed.");
-            }
+            const asset = await Asset.findByIdAndDelete(id)
+            if (!asset) return res.json("Unit does not exist.");
+
+            const unit = await Unit.findById(asset.unit);
+            unit.assets.pull(id);
+            await unit.save();
+            return res.json("Unit sucessfuly removed.");
         }
         catch (err) {
-            res.json({
+            console.log(err);
+            return res.json({
                 err,
                 msg: "Unable to delete the unit."
             });

@@ -6,7 +6,7 @@ const AssetSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    image: {
+    imagePath: {
         type: String,
         required: true
     },
@@ -24,12 +24,14 @@ const AssetSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ['running', 'alerting', 'stopped']
+        enum: ['running', 'alerting', 'stopped'],
+        required: true
     },
     healthLevel: {
         type: Number,
         min: 0,
-        max: 100
+        max: 100,
+        required: true
     },
     unit: {
         type: mongoose.Schema.Types.ObjectId,

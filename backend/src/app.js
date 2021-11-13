@@ -23,6 +23,6 @@ app.use("/", AssetRoutes);
 
 mongoose.connect(`${process.env.MONGO_AUTH}/tractian`)
     .then(console.log("Database connection: Success"))
-    .catch(e => console.error("Database connection: Error", err));
+    .catch(err => console.error("Database connection: Error", err));
 
 app.listen(port, console.log(`Server available on port :${port}`));
