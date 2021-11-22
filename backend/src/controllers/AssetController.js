@@ -1,7 +1,5 @@
 import Asset from "../models/AssetModel.js";
 import Unit from "../models/UnitModel.js";
-import Company from "../models/CompanyModel.js";
-
 
 export default {
 
