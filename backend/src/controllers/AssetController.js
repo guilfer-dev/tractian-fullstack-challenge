@@ -77,28 +77,22 @@ export default {
 
     update: async (req, res) => {
 
-        const { id } = req.params;
-
-        const { newName } = req.body;
-        if (!newName) return res.json("New name is required.");
 
         try {
-            const asset = await Asset.findById(id)
+            const asset = await Asset.findByIdAndUpdate(req.params.id, req.fields)
 
-            if (asset.name === newName) return res.json({ msg: "New name is the same as the previous." });
+            if (!asset) return res.json("Asset does not exist.");
 
-            asset.name = newName;
-            await asset.save();
             return res.json({
-                name: newName,
-                msg: `Name of the company sucessfuly updated`
+                msg: `Asset sucessfuly updated`
             });
 
         }
         catch (err) {
+            console.log(err)
             return res.json({
                 err,
-                msg: "Unable to update the name of the company."
+                msg: "Unable to update the asset."
             })
         }
     },
@@ -109,18 +103,18 @@ export default {
 
         try {
             const asset = await Asset.findByIdAndDelete(id)
-            if (!asset) return res.json("Unit does not exist.");
+            if (!asset) return res.json("Asset does not exist.");
 
             const unit = await Unit.findById(asset.unit);
             unit.assets.pull(id);
             await unit.save();
-            return res.json("Unit sucessfuly removed.");
+            return res.json("Asset sucessfuly removed.");
         }
         catch (err) {
             console.log(err);
             return res.json({
                 err,
-                msg: "Unable to delete the unit."
+                msg: "Unable to delete the asset."
             });
         }
     },

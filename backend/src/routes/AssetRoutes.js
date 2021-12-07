@@ -7,7 +7,7 @@ const route = Router();
 route.post('/units/:unitName', parseAssetForm, AssetController.create);
 route.get('/assets', AssetController.index);
 route.get('/assets/:id', AssetController.show);
-route.put('/assets/:id', AssetController.update);
+route.put('/assets/:id', parseAssetForm, AssetController.update);
 route.delete('/assets/:id', AssetController.delete);
 
 export default route;
