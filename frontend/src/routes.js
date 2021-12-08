@@ -1,6 +1,7 @@
 // libraries
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
+    useLocation,
     BrowserRouter,
     Routes,
     Route,
@@ -8,7 +9,7 @@ import {
 } from "react-router-dom";
 
 // services
-import api from "./services/api";
+import api from "./services/api"
 
 // pages
 import Login from "./pages/Login"
@@ -23,18 +24,20 @@ const App = () => {
     const [auth, setAuth] = useState(false);
 
     function PrivateRoute({ children }) {
-        checkAuth();
-        return auth ? children : <Navigate to="/login" />;
-    }
 
-    async function checkAuth() {
-        try {
-            await api.get("/me")
-            setAuth(true)
-        }
-        catch (err) {
-            setAuth(false);
-        }
+        const location = useLocation();
+
+        (async () => {
+            try {
+                await api.get("/me");
+                setAuth(true);
+            }
+            catch (err) {
+                setAuth(false);
+            }
+        })();
+
+        return auth ? children : <Navigate to="/login" state={{ from: location }} />;
     }
 
     return (
@@ -49,7 +52,6 @@ const App = () => {
                 <Route path="*" element={<NotFound />} />
             </Routes>
         </BrowserRouter>
-
     );
 };
 

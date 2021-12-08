@@ -17,7 +17,6 @@ import healthLevelChart from "../../variables/charts/healthLevelChart"
 import NavBar from "../../components/NavBar"
 import AssetCart from "../../components/AssetCard"
 
-
 // styles
 import "./styles.css"
 import "./charts.css"

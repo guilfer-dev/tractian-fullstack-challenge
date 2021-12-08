@@ -1,9 +1,12 @@
 // libraries
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Navbar, Container, Nav, NavDropdown } from 'react-bootstrap'
 
-//helpers and services
-import api from "../services/api"
+// helpers and services
+import api from "../../services/api"
+
+// styles
+import "./styles.css"
 
 function NavBar({ states }) {
 
@@ -18,7 +21,7 @@ function NavBar({ states }) {
     return (
         <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
             <Container className="nav-bar" fluid>
-                <Navbar.Brand href="/">Assets Manager</Navbar.Brand>
+                <Link to="/" className="brand-link"><Navbar.Brand>Assets Manager</Navbar.Brand></Link>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav>

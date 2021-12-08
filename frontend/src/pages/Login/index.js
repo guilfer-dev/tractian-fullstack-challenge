@@ -1,5 +1,5 @@
 // libraries
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 
 //helpers and services
@@ -13,8 +13,15 @@ function Login() {
 
     const navigate = useNavigate();
 
-    const [loginID, setloginID] = useState("")
-    const [error, setError] = useState("")
+    useEffect(() => {
+        (async () => {
+            const { status } = await api.get("/me");
+            if (status === 200) navigate("/");
+        })();
+    }, [navigate])
+
+    const [loginID, setloginID] = useState("");
+    const [error, setError] = useState("");
 
     async function handleSubmit(e) {
         e.preventDefault();
