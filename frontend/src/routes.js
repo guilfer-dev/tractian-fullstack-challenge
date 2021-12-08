@@ -1,5 +1,5 @@
 // libraries
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
     useLocation,
     BrowserRouter,
@@ -10,7 +10,6 @@ import {
 
 // services
 import api from "./services/api"
-
 // pages
 import Login from "./pages/Login"
 import Main from "./pages/Main"
@@ -27,15 +26,17 @@ const App = () => {
 
         const location = useLocation();
 
-        (async () => {
-            try {
-                await api.get("/me");
-                setAuth(true);
-            }
-            catch (err) {
-                setAuth(false);
-            }
-        })();
+        useEffect(() => {
+            (async () => {
+                try {
+                    await api.get("/me");
+                    setAuth(true);
+                }
+                catch (err) {
+                    setAuth(false);
+                }
+            })();
+        })
 
         return auth ? children : <Navigate to="/login" state={{ from: location }} />;
     }
