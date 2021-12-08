@@ -31,42 +31,42 @@ function Main() {
     const [units, setUnits] = useState([])
     const [unitView, setUnitView] = useState({})
     const [assets, setAssets] = useState([])
-    // const { companyName, companyID } = JSON.parse(localStorage.getItem("session"))
-    const companyName = "Industria Freios Supremos",
-        companyID = "618ecddb6abbb006ecd6e6f7"
+    const company = JSON.parse(localStorage.getItem("company"))
 
     // fetch units data from the api
     useEffect(() => {
         async function getData() {
-            const { data: { units } } = await api.get(`/companies/${companyID}`);
-            setUnits(units);
-            setUnitView(units[0]);
-
+            if (company._id) {
+                const { data: { units } } = await api.get(`/companies/${company._id}`);
+                setUnits(units);
+                setUnitView(units[0]);
+            }
         }
 
         getData();
 
-    }, [companyID])
+    }, [company._id])
 
     // fetch assets data from the api
     useEffect(() => {
         async function getData() {
-            const { data: assets } = await api.get(`/units/${unitView._id}/assets`);
-            setAssets(assets);
+            if (unitView._id) {
+                const { data: assets } = await api.get(`/units/${unitView._id}/assets`);
+                setAssets(assets);
+            }
         }
 
         getData();
 
-    }, [unitView._id])
+    }, [unitView])
 
     const states = {
-        companyName,
-        companyID,
+        companyName: company.name,
+        companyID: company._id,
         unitView,
         setUnitView,
         units
     }
-
 
     return (
         <>
@@ -97,7 +97,7 @@ function Main() {
                             {assets.length > 0 ? assets.map((e, i) => (
                                 <AssetCart data={e} key={`card-${i}`} />
                             )) :
-                                "Network failure or there are assets available"
+                                "Network failure or there are no assets available for this unit"
                             }
                         </Container>
                     </Tab>

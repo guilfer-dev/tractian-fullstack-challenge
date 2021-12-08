@@ -33,7 +33,7 @@ export default {
             });
         }
         catch (err) {
-            console.log(err);
+            console.error(err);
             return res.json({
                 err,
                 msg: "Unable to create user."
@@ -51,6 +51,7 @@ export default {
             return res.json(users);
         }
         catch (err) {
+            console.error(err);
             return res.json({
                 err,
                 msg: "Unable to list users."
@@ -70,6 +71,7 @@ export default {
             return res.json(user);
         }
         catch (err) {
+            console.error(err);
             return res.json({
                 err,
                 msg: "Unable to locate the user."
@@ -86,6 +88,7 @@ export default {
             return res.json("User sucessfuly removed.");
         }
         catch (err) {
+            console.error(err);
             return res.json({
                 err,
                 msg: "Unable to locate the user."

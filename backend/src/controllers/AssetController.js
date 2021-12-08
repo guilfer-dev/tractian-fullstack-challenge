@@ -33,6 +33,7 @@ export default {
             return res.json(asset);
         }
         catch (err) {
+            console.error(err);
             return res.json({
                 err,
                 msg: "Unable to create the unit."
@@ -43,8 +44,6 @@ export default {
     index: async (req, res) => {
 
         const { unitID } = req.params
-        console.log(unitID)
-
         try {
             const assets = await Asset.find({})
                 .where("unit").equals(unitID)
@@ -53,6 +52,7 @@ export default {
             return res.json(assets);
         }
         catch (err) {
+            console.error(err);
             return res.json({
                 err,
                 msg: "Unable to list units."
@@ -71,7 +71,7 @@ export default {
             return res.json(assets)
         }
         catch (err) {
-            console.log(err);
+            console.error(err);
             return res.json({
                 err,
                 msg: "Unable to locate the company."
@@ -93,7 +93,7 @@ export default {
 
         }
         catch (err) {
-            console.log(err)
+            console.error(err);
             return res.json({
                 err,
                 msg: "Unable to update the asset."
@@ -115,7 +115,7 @@ export default {
             return res.json("Asset sucessfuly removed.");
         }
         catch (err) {
-            console.log(err);
+            console.error(err);
             return res.json({
                 err,
                 msg: "Unable to delete the asset."

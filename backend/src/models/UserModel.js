@@ -13,7 +13,10 @@ const UserSchema = new mongoose.Schema({
         unique: true,
         required: true
     },
-
+    accessToken: {
+        type: String,
+        unique: true
+    },
     company: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Company'

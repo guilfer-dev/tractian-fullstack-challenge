@@ -16,7 +16,7 @@ app.use(express.json());
 app.use(cors());
 
 app.use("/users", UserRoutes);
-app.use("/login", AuthenticationRoutes);
+app.use("/", AuthenticationRoutes);
 app.use("/companies", CompanyRoutes);
 app.use("/", UnitRoutes);
 app.use("/", AssetRoutes);

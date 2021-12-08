@@ -18,3 +18,9 @@
     display: block;
     margin: 0 auto;
 }
+
+.error {
+    padding: 0.2rem;
+    margin: 1rem auto;
+    width: fit-content;
+}

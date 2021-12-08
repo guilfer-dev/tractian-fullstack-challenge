@@ -2,15 +2,18 @@
 import { useNavigate } from "react-router-dom";
 import { Navbar, Container, Nav, NavDropdown } from 'react-bootstrap'
 
+//helpers and services
+import api from "../services/api"
+
 function NavBar({ states }) {
 
     const navigate = useNavigate();
 
-    function handleExit() {
-        localStorage.removeItem("session");
-        navigate("/login")
+    async function handleExit() {
+        await api.get("/logout");
+        localStorage.clear();
+        navigate("/login");
     }
-
 
     return (
         <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">

@@ -1,34 +1,40 @@
 // libraries
-// import { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 
 //helpers and services
-// import api from "../../services/api.js"
+import api from "../../services/api.js"
 
 //styles
-import { Container, Card, Form, Button } from 'react-bootstrap'
+import { Container, Card, Form, Button, Alert } from 'react-bootstrap'
 import "./styles.css"
 
 function Login() {
 
     const navigate = useNavigate();
 
-    // const [loginID, setloginID] = useState("")
+    const [loginID, setloginID] = useState("")
+    const [error, setError] = useState("")
 
     async function handleSubmit(e) {
         e.preventDefault();
 
-        // const {
-        //     data: {
-        //         _id: userID,
-        //         name: userName,
-        //         company: { _id: companyID, name: companyName }
-        //     }
-        // } = await api.post("/login", { loginID });
+        try {
+            const {
+                data: {
+                    token,
+                    company
+                }
+            } = await api.post("/login", { loginID });
 
-        // localStorage.setItem("session", JSON.stringify({ userID, userName, companyID, companyName }))
+            localStorage.setItem("company", JSON.stringify(company))
+            localStorage.setItem("token", token)
 
-        navigate("/")
+            navigate("/")
+        }
+        catch (err) {
+            setError("Login failed")
+        }
     }
 
     return (
@@ -40,13 +46,11 @@ function Login() {
                         Assets Manager</Card.Title>
                     <Form onSubmit={handleSubmit}>
                         <Form.Group className="mb-3">
-                            <Form.Control type="e-mail" placeholder="E-mail" />
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Control type="password" placeholder="Password"
-                            // onChange={e => setloginID(e.target.value)}
+                            <Form.Control type="text" placeholder="Login ID"
+                                onChange={e => setloginID(e.target.value)}
                             />
                         </Form.Group>
+                        {error && <Alert variant="danger" className="error">{error}</Alert>}
                         <Button variant="primary" type="submit" className="login-form-btn">
                             Enter
                         </Button>

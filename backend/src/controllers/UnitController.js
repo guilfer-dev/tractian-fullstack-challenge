@@ -27,7 +27,7 @@ export default {
             });
         }
         catch (err) {
-            console.log(err);
+            console.error(err);
             return res.json({
                 err,
                 msg: "Unable to create the unit."
@@ -44,6 +44,7 @@ export default {
             return res.json(units);
         }
         catch (err) {
+            console.error(err);
             return res.json({
                 err,
                 msg: "Unable to list units."
@@ -65,6 +66,7 @@ export default {
             return res.json(unit);
         }
         catch (err) {
+            console.error(err);
             return res.json({
                 err,
                 msg: "Unable to locate the company."
@@ -90,6 +92,7 @@ export default {
             });
         }
         catch (err) {
+            console.error(err);
             return res.json({
                 err,
                 msg: "Unable to update the name of the company."
@@ -111,7 +114,7 @@ export default {
             return res.json("Unit sucessfuly removed.");
         }
         catch (err) {
-            console.log(err);
+            console.error(err);
             return res.json({
                 err,
                 msg: "Unable to delete the unit."
