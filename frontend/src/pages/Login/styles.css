@@ -1,0 +1,20 @@
+.container-login {
+    min-width: 100vw;
+    height: 100vh;
+    background-image: url("../../assets/bg-login.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.login-form {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 18rem;
+}
+
+.login-form-btn {
+    display: block;
+    margin: 0 auto;
+}

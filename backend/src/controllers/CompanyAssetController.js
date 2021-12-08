@@ -5,7 +5,7 @@ export default {
 
     create: async (req, res) => {
 
-        const { unitID } = req.params;
+        const { unitName } = req.params;
 
         const { name,
             image,
@@ -16,7 +16,7 @@ export default {
             healthLevel } = req.fields;
 
         try {
-            const unit = await Unit.findById(unitID);
+            const unit = await Unit.findOne({ "name": unitName });
             const asset = await Asset.create({
                 name,
                 imagePath: image,
@@ -42,12 +42,8 @@ export default {
 
     index: async (req, res) => {
 
-        const { unitID } = req.params
-        console.log(unitID)
-
         try {
             const assets = await Asset.find({})
-                .where("unit").equals(unitID)
                 .select("-__v")
                 .populate("unit", "-assets -__v");
             return res.json(assets);

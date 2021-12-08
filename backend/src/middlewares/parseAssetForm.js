@@ -20,8 +20,9 @@ export default function upload(req, res, next) {
                 if (Object.keys(fields).length < 6) return res.json({ msg: "All fields are required." });
 
                 try {
-                    const { _id: unitId } = await Unit.findOne({ "name": req.params.unitName });
-                    const assetInDB = await Asset.findOne({ "name": fields.name }).where("unit").equals(unitId);
+                    const { unitID } = req.params;
+                    const assetInDB = await Asset.findOne({ "name": fields.name })
+                        .where("unit").equals(unitID);
 
                     if (assetInDB) return res.json({ message: "This asset already exists in this unit." })
                     req.fields = fields;
@@ -41,7 +42,7 @@ export default function upload(req, res, next) {
                     req.fields.image = image;
                     next();
                 }
-                catch (e) {
+                catch (err) {
                     return res.json({ message: "Invalid request." })
                 }
             }
