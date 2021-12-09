@@ -53,9 +53,9 @@ export default {
     logout: async (req, res) => {
         try {
 
-            const { userID } = req.decoded;
+            const { username } = req.decoded;
 
-            let user = await User.findOne({ userID });
+            let user = await User.findOne({ name: username });
             user.accessToken = "";
             await user.save();
 
