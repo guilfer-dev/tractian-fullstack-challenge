@@ -71,6 +71,6 @@ export default {
     },
 
     me: (req, res) => {
-        return res.status(200).end();
+        return res.end();
     }
 }

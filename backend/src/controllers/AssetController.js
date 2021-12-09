@@ -11,7 +11,7 @@ export default {
         const assetInDB = await Asset.findOne({ "name": fields.name })
             .where("unit").equals(unitID);
 
-        if (assetInDB) return res.json({ message: "This asset already exists in this unit." })
+        if (assetInDB) return res.status(400).json({ message: "This asset already exists in this unit." })
 
         const { name,
             image,
@@ -40,7 +40,7 @@ export default {
         }
         catch (err) {
             console.error(err);
-            return res.json({
+            return res.status(500).json({
                 err,
                 msg: "Unable to create the unit."
             })
@@ -59,7 +59,7 @@ export default {
         }
         catch (err) {
             console.error(err);
-            return res.json({
+            return res.status(400).json({
                 err,
                 msg: "Unable to list units."
             });
@@ -78,7 +78,7 @@ export default {
         }
         catch (err) {
             console.error(err);
-            return res.json({
+            return res.status(400).json({
                 err,
                 msg: "Unable to locate the company."
             })
@@ -88,9 +88,11 @@ export default {
     update: async (req, res) => {
 
         try {
-            const asset = await Asset.findByIdAndUpdate(req.params.id, req.fields)
+            const asset = await Asset.findByIdAndUpdate(req.params.id, req.fields, {
+                runValidators: true
+            })
 
-            if (!asset) return res.json("Asset does not exist.");
+            if (!asset) return res.status(400).json("Asset does not exist.");
 
             S3FileRemove(asset.image);
             return res.json({
@@ -100,7 +102,7 @@ export default {
         }
         catch (err) {
             console.error(err);
-            return res.json({
+            return res.status(500).json({
                 err,
                 msg: "Unable to update the asset."
             })
@@ -113,7 +115,7 @@ export default {
 
         try {
             const asset = await Asset.findByIdAndDelete(id)
-            if (!asset) return res.json("Asset does not exist.");
+            if (!asset) return res.status(400).json("Asset does not exist.");
 
             const unit = await Unit.findById(asset.unit);
             unit.assets.pull(id);
@@ -122,7 +124,7 @@ export default {
         }
         catch (err) {
             console.error(err);
-            return res.json({
+            return res.status(500).json({
                 err,
                 msg: "Unable to delete the asset."
             });

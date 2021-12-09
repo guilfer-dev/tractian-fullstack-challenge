@@ -6,14 +6,14 @@ export default {
     create: async (req, res) => {
 
         const { name, company } = req.body;
-        if (!name || !company) return res.json({ message: "Name or company information is missing." });
+        if (!name || !company) return res.status(400).json({ message: "Name or company information is missing." });
 
         try {
             const userInDB = await User.findOne({ name });
-            if (userInDB) return res.json({ message: "This user already exists." });
+            if (userInDB) return res.status(400).json({ message: "This user already exists." });
 
             const companyInDB = await Company.findOne({ name: company })
-            if (!companyInDB) return res.json({ message: "This company does not exist." });
+            if (!companyInDB) return res.status(400).json({ message: "This company does not exist." });
 
             const loginID = Math.random().toString(36).slice(2).toUpperCase();
             const user = await User.create({
@@ -24,7 +24,7 @@ export default {
 
             companyInDB.users.push(user);
             await companyInDB.save();
-            
+
             return res.json({
                 _id: user._id,
                 loginID,
@@ -34,7 +34,7 @@ export default {
         }
         catch (err) {
             console.error(err);
-            return res.json({
+            return res.status(500).json({
                 err,
                 msg: "Unable to create user."
             });
@@ -52,7 +52,7 @@ export default {
         }
         catch (err) {
             console.error(err);
-            return res.json({
+            return res.status(400).json({
                 err,
                 msg: "Unable to list users."
             });
@@ -72,7 +72,7 @@ export default {
         }
         catch (err) {
             console.error(err);
-            return res.json({
+            return res.status(400).json({
                 err,
                 msg: "Unable to locate the user."
             });
@@ -89,7 +89,7 @@ export default {
         }
         catch (err) {
             console.error(err);
-            return res.json({
+            return res.status(400).json({
                 err,
                 msg: "Unable to locate the user."
             });

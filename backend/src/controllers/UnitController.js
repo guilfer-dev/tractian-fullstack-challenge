@@ -6,8 +6,8 @@ export default {
 
     create: async (req, res) => {
 
-        const { name } = req.body; ''
-        if (!name) return res.json({ message: "Provide the name of the new company" });
+        const { name } = req.body;
+        if (!name) return res.status(400).json({ message: "Provide the name of the new company" });
 
         const { companyName } = req.params;
 
@@ -15,7 +15,7 @@ export default {
             const [company] = await Company.find({ "name": companyName }).populate("units");
 
             const unitInDB = company.units.find(e => e.name === name);
-            if (unitInDB) return res.json({ message: "This unit already exists in this company." });
+            if (unitInDB) return res.status(400).json({ message: "This unit already exists in this company." });
 
             const unit = await Unit.create({ name, company: company._id });
             company.units.push(unit);
@@ -28,7 +28,7 @@ export default {
         }
         catch (err) {
             console.error(err);
-            return res.json({
+            return res.status(500).json({
                 err,
                 msg: "Unable to create the unit."
             })
@@ -45,7 +45,7 @@ export default {
         }
         catch (err) {
             console.error(err);
-            return res.json({
+            return res.status(400).json({
                 err,
                 msg: "Unable to list units."
             });
@@ -61,13 +61,13 @@ export default {
                 .select("-__v")
                 .populate("company", "name");
 
-            if (!unit) return res.json({ msg: "This unit does not exist" });
+            if (!unit) return res.status(400).json({ msg: "This unit does not exist" });
 
             return res.json(unit);
         }
         catch (err) {
             console.error(err);
-            return res.json({
+            return res.status(500).json({
                 err,
                 msg: "Unable to locate the company."
             })
@@ -82,7 +82,7 @@ export default {
         try {
             const unit = await Unit.findById(id)
 
-            if (unit.name === newName) return res.json({ msg: "New name is the same as the previous." });
+            if (unit.name === newName) return res.status(400).json({ msg: "New name is the same as the previous." });
 
             unit.name = newName;
             await unit.save();
@@ -93,7 +93,7 @@ export default {
         }
         catch (err) {
             console.error(err);
-            return res.json({
+            return res.status(500).json({
                 err,
                 msg: "Unable to update the name of the company."
             })
@@ -115,7 +115,7 @@ export default {
         }
         catch (err) {
             console.error(err);
-            return res.json({
+            return res.status(500).json({
                 err,
                 msg: "Unable to delete the unit."
             });

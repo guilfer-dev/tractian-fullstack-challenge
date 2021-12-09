@@ -5,23 +5,24 @@ export default {
     create: async (req, res) => {
 
         const { name } = req.body;
-        if (!name) return res.json({ message: "Provide the name of the new company" });
+        if (!name) return res.status(400).json({ message: "Provide the name of the new company" });
 
         try {
             const companyInDB = await Company.findOne({ name });
-            if (companyInDB) return res.json({ message: "This company already exists." });
+            if (companyInDB) return res.status(400).json({ message: "This company already exists." });
 
             const company = await Company.create({ name });
-            res.json({
+            return res.json({
                 _id: company._id,
                 name
             })
         }
         catch (err) {
-            res.json({
+            console.error(err);
+            return res.status(500).json({
                 err,
                 msg: "Unable to create the company."
-            })
+            });
         }
     },
 
@@ -29,10 +30,10 @@ export default {
 
         try {
             const companies = await Company.find({}).select("name")
-            res.json(companies);
+            return res.json(companies);
         }
         catch (err) {
-            res.json({
+            return res.status(400).json({
                 err,
                 msg: "Unable to list companies."
             });
@@ -48,10 +49,11 @@ export default {
                 .populate("units", "name")
                 .populate("users", "name");
 
-            res.json(company);
+            return res.json(company);
         }
         catch (err) {
-            return res.json({
+            console.error(err);
+            return res.status(400).json({
                 err,
                 msg: "Unable to locate the company."
             });
@@ -78,10 +80,11 @@ export default {
             });
         }
         catch (err) {
-            return res.json({
+            console.error(err);
+            return res.status(500).json({
                 err,
                 msg: "Unable to update the name of the company."
-            })
+            });
         }
     },
 
@@ -94,11 +97,11 @@ export default {
             return res.json("Company sucessfuly removed.");
         }
         catch {
-            return res.json({
+            console.error(err)
+            return res.status(500).json({
                 err,
                 msg: "Unable to locate the company."
-            })
+            });
         }
-
     },
 }

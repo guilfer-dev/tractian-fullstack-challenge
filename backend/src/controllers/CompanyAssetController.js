@@ -33,10 +33,11 @@ export default {
             return res.json(asset);
         }
         catch (err) {
-            return res.json({
+            console.error(err);
+            return res.status(400).json({
                 err,
                 msg: "Unable to create the unit."
-            })
+            });
         }
     },
 
@@ -49,7 +50,8 @@ export default {
             return res.json(assets);
         }
         catch (err) {
-            return res.json({
+            console.error(err);
+            return res.status(400).json({
                 err,
                 msg: "Unable to list units."
             });
@@ -67,11 +69,11 @@ export default {
             return res.json(assets)
         }
         catch (err) {
-            console.log(err);
-            return res.json({
+            console.error(err);
+            return res.status(400).json({
                 err,
                 msg: "Unable to locate the company."
-            })
+            });
         }
     },
 
@@ -81,7 +83,7 @@ export default {
         try {
             const asset = await Asset.findByIdAndUpdate(req.params.id, req.fields)
 
-            if (!asset) return res.json("Asset does not exist.");
+            if (!asset) return res.status(400).json("Asset does not exist.");
 
             return res.json({
                 msg: `Asset sucessfuly updated`
@@ -89,11 +91,11 @@ export default {
 
         }
         catch (err) {
-            console.log(err)
-            return res.json({
+            console.error(err);
+            return res.status(500).json({
                 err,
                 msg: "Unable to update the asset."
-            })
+            });
         }
     },
 
@@ -103,7 +105,7 @@ export default {
 
         try {
             const asset = await Asset.findByIdAndDelete(id)
-            if (!asset) return res.json("Asset does not exist.");
+            if (!asset) return res.status(400).json("Asset does not exist.");
 
             const unit = await Unit.findById(asset.unit);
             unit.assets.pull(id);
@@ -112,7 +114,7 @@ export default {
         }
         catch (err) {
             console.log(err);
-            return res.json({
+            return res.status(500).json({
                 err,
                 msg: "Unable to delete the asset."
             });

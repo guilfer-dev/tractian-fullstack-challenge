@@ -1,4 +1,5 @@
 .asset-card {
+    margin: 0 auto;
     display: flex;
     width: 18rem;
 }
