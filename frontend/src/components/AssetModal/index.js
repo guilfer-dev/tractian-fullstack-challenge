@@ -6,7 +6,14 @@ import "./styles.css"
 // services
 import api from "../../services/api"
 
-function ModifyAssetModal({ showModal, setShowModal, data, setData, setAssets, unitView }) {
+function ModifyAssetModal({
+    showModal,
+    setShowModal,
+    data,
+    setData,
+    setAssets,
+    unitView }
+) {
 
     const [error, setError] = useState("");
 
@@ -16,6 +23,7 @@ function ModifyAssetModal({ showModal, setShowModal, data, setData, setAssets, u
     const [status, setStatus] = useState("");
     const [description, setDescription] = useState("");
     const [healthLevel, setHealthLevel] = useState("");
+    const [image, setImage] = useState({});
 
     useEffect(() => {
         setName(data.name);
@@ -35,16 +43,28 @@ function ModifyAssetModal({ showModal, setShowModal, data, setData, setAssets, u
 
     async function handleSubmit(e) {
         e.preventDefault();
-        const form = new FormData(e.target);
-        console.log(form)
-        try {
 
-            await api.put(
-                `/assets/${data._id}`,
-                form,
-                {
-                    headers: { "content-type": "multipart/form-data" }
-                });
+        const form = new FormData()
+
+        const newData = {
+            name,
+            owner,
+            model,
+            status,
+            description,
+            healthLevel,
+            image,
+        }
+
+        for (let item in newData) {
+
+            if (newData[item] !== data[item]) {
+                form.append(item, newData[item])
+            }
+        }
+
+        try {
+            await api.put(`/assets/${data._id}`, form);
             const { data: assets } = await api.get(`/units/${unitView._id}/assets`);
             setAssets(assets);
             setError("");
@@ -59,44 +79,44 @@ function ModifyAssetModal({ showModal, setShowModal, data, setData, setAssets, u
     return (
         <Modal show={showModal} onHide={() => setShowModal(false)}>
             <Modal.Header closeButton>
-                <Modal.Title>Modify Asset</Modal.Title>
+                <Modal.Title>{data ? "Modify asset" : "New asset"}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <Form onSubmit={handleSubmit} id="asset">
                     <Form.Group className="d-flex justify-content-evenly align-items-center mb-2">
                         <Form.Label className="w-25 fw-bold">Name</Form.Label>
-                        <Form.Control className="w-50" type="text" value={name} name="name"
+                        <Form.Control className="w-50" type="text" value={name}
                             onChange={e => setName(e.target.value)}
                         />
                     </Form.Group>
                     <Form.Group className="d-flex justify-content-evenly align-items-center mb-2">
                         <Form.Label className="w-25 fw-bold">Owner</Form.Label>
-                        <Form.Control className="w-50" type="text" value={owner} name="owner"
+                        <Form.Control className="w-50" type="text" value={owner}
                             onChange={e => setOwner(e.target.value)}
                         />
                     </Form.Group>
                     <Form.Group className="d-flex justify-content-evenly align-items-center mb-2">
                         <Form.Label className="w-25 fw-bold">Model</Form.Label>
-                        <Form.Control className="w-50" type="text" value={model} name="model"
+                        <Form.Control className="w-50" type="text" value={model}
                             onChange={e => setModel(e.target.value)}
                         />
                     </Form.Group>
                     <Form.Group className="d-flex justify-content-evenly align-items-center mb-2">
                         <Form.Label className="w-25 fw-bold">Status</Form.Label>
-                        <Form.Control className="w-50" type="text" value={status} name="status"
+                        <Form.Control className="w-50" type="text" value={status}
                             onChange={e => setStatus(e.target.value)}
                         />
                     </Form.Group>
                     <Form.Group className="d-flex justify-content-evenly align-items-center mb-2">
                         <Form.Label className="w-25 fw-bold">Description</Form.Label>
-                        <Form.Control className="w-50" as="textarea" value={description} name="description"
+                        <Form.Control className="w-50" as="textarea" value={description}
                             onChange={e => setDescription(e.target.value)}
                         />
                     </Form.Group>
                     <Form.Group className="d-flex justify-content-evenly align-items-center mb-2">
                         <Form.Label className="w-25 fw-bold">Health level</Form.Label>
                         <div className="w-50 hl-container">
-                            <Form.Control type="number" min="0" max="100" className="hl-number-input" value={healthLevel} name="healthLevel"
+                            <Form.Control type="number" min="0" max="100" className="hl-number-input" value={healthLevel}
                                 onChange={e => setHealthLevel(e.target.value)}
                             />
                             <input type="range"
@@ -109,7 +129,7 @@ function ModifyAssetModal({ showModal, setShowModal, data, setData, setAssets, u
                     </Form.Group>
                     <Form.Group className="d-flex justify-content-evenly align-items-center mb-2">
                         <Form.Label className="w-25 fw-bold">Image</Form.Label>
-                        <Form.Control className="w-50" type="file" name="image" />
+                        <Form.Control className="w-50" type="file" onChange={(e) => setImage(e.target.files[0])} />
                     </Form.Group>
                 </Form>
                 {error && <Alert variant="danger" className="error">{error}</Alert>}
@@ -119,7 +139,7 @@ function ModifyAssetModal({ showModal, setShowModal, data, setData, setAssets, u
                     Close
                 </Button>
                 <Button variant="primary" type="submit" form="asset">
-                    Save Changes
+                    {data ? "Save Changes" : "Create asset"}
                 </Button>
             </Modal.Footer>
         </Modal>
