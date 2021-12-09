@@ -4,3 +4,9 @@
     grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
     gap: 1rem;
 }
+
+.add-new-asset-btn {
+    display: block;
+    margin: 1rem auto;
+
+}

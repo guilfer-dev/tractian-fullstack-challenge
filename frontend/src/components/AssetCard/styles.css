@@ -26,3 +26,7 @@
     border-radius: .3rem;
     background: #3a3a3a;
 }
+
+.card-title {
+    text-transform: uppercase;
+}

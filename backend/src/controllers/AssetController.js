@@ -8,7 +8,7 @@ export default {
     create: async (req, res) => {
 
         const { unitID } = req.params;
-        const assetInDB = await Asset.findOne({ "name": fields.name })
+        const assetInDB = await Asset.findOne({ "name": req.fields.name })
             .where("unit").equals(unitID);
 
         if (assetInDB) return res.status(400).json({ message: "This asset already exists in this unit." })

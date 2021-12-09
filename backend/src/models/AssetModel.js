@@ -4,6 +4,8 @@ const AssetSchema = new mongoose.Schema({
 
     name: {
         type: String,
+        trim: true,
+        lowercase: true,
         required: true
     },
     image: {
@@ -24,6 +26,7 @@ const AssetSchema = new mongoose.Schema({
     },
     status: {
         type: String,
+        lowercase: true,
         enum: ['running', 'alerting', 'stopped'],
         required: true
     },

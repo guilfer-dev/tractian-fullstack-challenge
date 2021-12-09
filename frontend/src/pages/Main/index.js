@@ -9,7 +9,8 @@ import {
     Col,
     Row,
     Tab,
-    Tabs
+    Tabs,
+    Button
 } from 'react-bootstrap'
 
 // services and helpers
@@ -76,8 +77,7 @@ function Main() {
         units
     }
 
-    async function handleDelete(evt, index) {
-        evt.preventDefault();
+    async function handleDelete(index) {
         const deletion = window.confirm("Você tem certeza sobre deletar essa despesa? A ação não poderá ser desfeita");
         if (deletion) {
             await api.delete(`/assets/${assets[index]._id}`)
@@ -86,11 +86,15 @@ function Main() {
         }
     }
 
-    async function handleModify(evt, index) {
-        evt.preventDefault();
+    async function handleModify(index) {
         setShowModal(true);
         setAssetData(assets[index])
 
+    }
+
+    function handleNewAsset() {
+        setShowModal(true);
+        setAssetData(false);
     }
 
     return (
@@ -118,6 +122,7 @@ function Main() {
                         </Container>
                     </Tab>
                     <Tab eventKey="assets" title="Assets" >
+                        <Button className="add-new-asset-btn" onClick={handleNewAsset}>Add new asset</Button>
                         <Container className="cards-container">
                             {assets.length > 0 ? assets.map((e, i) => (
                                 <AssetCard data={e} index={i} handleDelete={handleDelete} handleModify={handleModify} key={`card-${i}`} />

@@ -4,6 +4,8 @@ const UnitSchema = new mongoose.Schema({
 
     name: {
         type: String,
+        trim: true,
+        lowercase: true,
         required: true
     },
     assets: [{

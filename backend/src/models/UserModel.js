@@ -4,6 +4,8 @@ const UserSchema = new mongoose.Schema({
 
     name: {
         type: String,
+        trim: true,
+        lowercase: true,
         unique: true,
         required: true
     },

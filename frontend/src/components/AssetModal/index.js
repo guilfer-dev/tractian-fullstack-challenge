@@ -64,7 +64,13 @@ function ModifyAssetModal({
         }
 
         try {
-            await api.put(`/assets/${data._id}`, form);
+
+            if (data) {
+                await api.put(`/assets/${data._id}`, form);
+            } else {
+                await api.post(`/units/${unitView._id}`, form);
+            }
+
             const { data: assets } = await api.get(`/units/${unitView._id}/assets`);
             setAssets(assets);
             setError("");
@@ -85,38 +91,40 @@ function ModifyAssetModal({
                 <Form onSubmit={handleSubmit} id="asset">
                     <Form.Group className="d-flex justify-content-evenly align-items-center mb-2">
                         <Form.Label className="w-25 fw-bold">Name</Form.Label>
-                        <Form.Control className="w-50" type="text" value={name}
+                        <Form.Control required={!data} className="w-50" type="text" value={name}
                             onChange={e => setName(e.target.value)}
                         />
                     </Form.Group>
                     <Form.Group className="d-flex justify-content-evenly align-items-center mb-2">
                         <Form.Label className="w-25 fw-bold">Owner</Form.Label>
-                        <Form.Control className="w-50" type="text" value={owner}
+                        <Form.Control required={!data} className="w-50" type="text" value={owner}
                             onChange={e => setOwner(e.target.value)}
                         />
                     </Form.Group>
                     <Form.Group className="d-flex justify-content-evenly align-items-center mb-2">
                         <Form.Label className="w-25 fw-bold">Model</Form.Label>
-                        <Form.Control className="w-50" type="text" value={model}
+                        <Form.Control required={!data} className="w-50" type="text" value={model}
                             onChange={e => setModel(e.target.value)}
                         />
                     </Form.Group>
                     <Form.Group className="d-flex justify-content-evenly align-items-center mb-2">
                         <Form.Label className="w-25 fw-bold">Status</Form.Label>
-                        <Form.Control className="w-50" type="text" value={status}
+                        <Form.Select required={!data} className="w-50" type="text" value={status}
                             onChange={e => setStatus(e.target.value)}
-                        />
+                        >
+                            {["", "Running", "Alerting", "Stopped"].map(e => <option value={e}>{e}</option>)}
+                        </Form.Select>
                     </Form.Group>
                     <Form.Group className="d-flex justify-content-evenly align-items-center mb-2">
                         <Form.Label className="w-25 fw-bold">Description</Form.Label>
-                        <Form.Control className="w-50" as="textarea" value={description}
+                        <Form.Control required={!data} className="w-50" as="textarea" value={description}
                             onChange={e => setDescription(e.target.value)}
                         />
                     </Form.Group>
                     <Form.Group className="d-flex justify-content-evenly align-items-center mb-2">
                         <Form.Label className="w-25 fw-bold">Health level</Form.Label>
                         <div className="w-50 hl-container">
-                            <Form.Control type="number" min="0" max="100" className="hl-number-input" value={healthLevel}
+                            <Form.Control required={!data} type="number" min="0" max="100" className="hl-number-input" value={healthLevel}
                                 onChange={e => setHealthLevel(e.target.value)}
                             />
                             <input type="range"
@@ -129,7 +137,7 @@ function ModifyAssetModal({
                     </Form.Group>
                     <Form.Group className="d-flex justify-content-evenly align-items-center mb-2">
                         <Form.Label className="w-25 fw-bold">Image</Form.Label>
-                        <Form.Control className="w-50" type="file" onChange={(e) => setImage(e.target.files[0])} />
+                        <Form.Control required={!data} className="w-50" type="file" onChange={(e) => setImage(e.target.files[0])} />
                     </Form.Group>
                 </Form>
                 {error && <Alert variant="danger" className="error">{error}</Alert>}

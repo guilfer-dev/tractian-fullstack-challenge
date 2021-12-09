@@ -28,7 +28,7 @@ function AssetCard({ data, index, handleDelete, handleModify }) {
             <Card className="asset-card">
                 <Card.Img variant="top" src={data.img} />
                 <Card.Body>
-                    <Card.Title className="fs-4 text-center">{data.name}
+                    <Card.Title className="fs-4 text-center card-title">{data.name}
                         <Badge pill bg={parseStatus(data.status)}
                             text="dark"
                             className="asset-card-subtitle">
@@ -53,8 +53,8 @@ function AssetCard({ data, index, handleDelete, handleModify }) {
                             value={data.healthLevel} readOnly />
                     </Card.Text>
                     <div className="d-flex justify-content-evenly">
-                        <Button variant="primary" onClick={evt => handleModify(evt, index)}>Modify</Button>
-                        <Button variant="danger" onClick={evt => handleDelete(evt, index)}>Delete</Button>
+                        <Button variant="primary" onClick={evt => handleModify(index)}>Modify</Button>
+                        <Button variant="danger" onClick={evt => handleDelete(index)}>Delete</Button>
                     </div>
                 </Card.Body>
             </Card >
