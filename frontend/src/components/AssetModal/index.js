@@ -38,6 +38,7 @@ function ModifyAssetModal({
         e.preventDefault();
         setError("");
         setData({});
+        setImage({});
         setShowModal(false);
     }
 
@@ -53,7 +54,6 @@ function ModifyAssetModal({
             status,
             description,
             healthLevel,
-            image,
         }
 
         for (let item in newData) {
@@ -62,6 +62,8 @@ function ModifyAssetModal({
                 form.append(item, newData[item])
             }
         }
+
+        if (!!image.name) form.append("image", image);
 
         try {
 
@@ -75,6 +77,7 @@ function ModifyAssetModal({
             setAssets(assets);
             setError("");
             setData({});
+            setImage({});
             setShowModal(false);
         }
         catch (err) {

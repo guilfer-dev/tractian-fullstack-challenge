@@ -1,4 +1,5 @@
 // libraries
+import "dotenv/config";
 import { Card, Badge, Container, Button } from 'react-bootstrap'
 
 // style
@@ -23,10 +24,12 @@ function AssetCard({ data, index, handleDelete, handleModify }) {
         }
     }
 
+    console.log(`${process.env.REACT_APP_API_URL}/${data.image}`)
+
     return (
         <Container>
             <Card className="asset-card">
-                <Card.Img variant="top" src={data.img} />
+                <Card.Img className="card-img" variant="top" src={`${process.env.REACT_APP_IMG_URL}/${data.image}`} />
                 <Card.Body>
                     <Card.Title className="fs-4 text-center card-title">{data.name}
                         <Badge pill bg={parseStatus(data.status)}

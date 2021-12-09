@@ -30,3 +30,8 @@
 .card-title {
     text-transform: uppercase;
 }
+
+.card-img {
+    height: 10rem;
+    object-fit: cover;
+}
