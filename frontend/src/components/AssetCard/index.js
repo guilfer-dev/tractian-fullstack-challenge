@@ -1,10 +1,10 @@
 // libraries
-import { Card, Badge, Container } from 'react-bootstrap'
+import { Card, Badge, Container, Button } from 'react-bootstrap'
 
 // style
 import "./styles.css"
 
-function AssetCard({ data }) {
+function AssetCard({ data, index, handleDelete, handleModify }) {
 
     function parseStatus(status) {
 
@@ -52,6 +52,10 @@ function AssetCard({ data }) {
                         <input type="range" className="fw-bold slider"
                             value={data.healthLevel} readOnly />
                     </Card.Text>
+                    <div className="d-flex justify-content-evenly">
+                        <Button variant="primary" onClick={evt => handleModify(evt, index)}>Modify</Button>
+                        <Button variant="danger" onClick={evt => handleDelete(evt, index)}>Delete</Button>
+                    </div>
                 </Card.Body>
             </Card >
         </Container>

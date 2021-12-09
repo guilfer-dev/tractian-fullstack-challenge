@@ -11,7 +11,8 @@ export default function upload(req, res, next) {
     });
 
     form.on("file", (field, file) => {
-        image = file.filepath;
+        image = file.newFilename;
+
     });
 
     form.parse(req, async (err, fields, files) => {

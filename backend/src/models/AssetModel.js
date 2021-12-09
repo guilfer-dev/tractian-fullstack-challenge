@@ -6,7 +6,7 @@ const AssetSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    imagePath: {
+    image: {
         type: String,
         required: true
     },

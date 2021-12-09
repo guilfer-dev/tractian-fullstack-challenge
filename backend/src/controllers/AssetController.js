@@ -19,7 +19,7 @@ export default {
             const unit = await Unit.findById(unitID);
             const asset = await Asset.create({
                 name,
-                imagePath: image,
+                image,
                 description,
                 model,
                 owner,

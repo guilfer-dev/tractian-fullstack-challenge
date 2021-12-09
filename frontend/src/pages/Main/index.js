@@ -4,7 +4,13 @@ import { useState, useEffect } from "react";
 import Highcharts from "highcharts";
 import HighchartsReact from 'highcharts-react-official'
 import highcharts3d from 'highcharts/highcharts-3d'
-import { Container, Col, Row, Tab, Tabs } from 'react-bootstrap'
+import {
+    Container,
+    Col,
+    Row,
+    Tab,
+    Tabs
+} from 'react-bootstrap'
 
 // services and helpers
 import api from "../../services/api.js"
@@ -15,7 +21,8 @@ import healthLevelChart from "../../variables/charts/healthLevelChart"
 
 // components
 import NavBar from "../../components/NavBar"
-import AssetCart from "../../components/AssetCard"
+import AssetCard from "../../components/AssetCard"
+import AssetModal from "../../components/AssetModal"
 
 // styles
 import "./styles.css"
@@ -30,6 +37,8 @@ function Main() {
     const [units, setUnits] = useState([])
     const [unitView, setUnitView] = useState({})
     const [assets, setAssets] = useState([])
+    const [showModal, setShowModal] = useState(false);
+    const [assetData, setAssetData] = useState({});
     const company = JSON.parse(localStorage.getItem("company"))
 
     // fetch units data from the api
@@ -67,6 +76,23 @@ function Main() {
         units
     }
 
+    async function handleDelete(evt, index) {
+        evt.preventDefault();
+        const deletion = window.confirm("Você tem certeza sobre deletar essa despesa? A ação não poderá ser desfeita");
+        if (deletion) {
+            await api.delete(`/assets/${assets[index]._id}`)
+            const { data } = await api.get(`/units/${unitView._id}/assets`);
+            setAssets(data);
+        }
+    }
+
+    async function handleModify(evt, index) {
+        evt.preventDefault();
+        setShowModal(true);
+        setAssetData(assets[index])
+
+    }
+
     return (
         <>
             <NavBar states={states} />
@@ -94,7 +120,7 @@ function Main() {
                     <Tab eventKey="assets" title="Assets" >
                         <Container className="cards-container">
                             {assets.length > 0 ? assets.map((e, i) => (
-                                <AssetCart data={e} key={`card-${i}`} />
+                                <AssetCard data={e} index={i} handleDelete={handleDelete} handleModify={handleModify} key={`card-${i}`} />
                             )) :
                                 "Network failure or there are no assets available for this unit"
                             }
@@ -102,6 +128,7 @@ function Main() {
                     </Tab>
                 </Tabs>
             </Container>
+            <AssetModal showModal={showModal} setShowModal={setShowModal} data={assetData} setData={setAssetData} setAssets={setAssets} unitView={unitView} />
         </>
 
 

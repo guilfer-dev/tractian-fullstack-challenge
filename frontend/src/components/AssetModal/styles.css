@@ -1,0 +1,16 @@
+.hl-number-input {
+    width: 35%;
+}
+
+.slider-editable {
+    margin: auto;
+    width: 60%;
+}
+
+.slider-editable:hover {
+    cursor: pointer;
+}
+
+.hl-container {
+    display: flex;
+}
