@@ -1,53 +1,54 @@
-import Asset from "../models/AssetModel.js";
-import Unit from "../models/UnitModel.js";
+import fs from "fs";
 import formidable from "formidable";
 
-export default function upload(req, res, next) {
+import S3FileUpload from "../helpers/S3FileUpload.js";
 
-    let image;
+export default function upload(req, res, next) {
 
     const form = formidable({
         keepExtensions: true
     });
 
-    form.on("file", (field, file) => {
-        image = file.newFilename;
-
-    });
-
     form.parse(req, async (err, fields, files) => {
         if (!err) {
-            if (req.method === "POST") {
-                if (Object.keys(fields).length < 6) return res.json({ msg: "All fields are required." });
+            const fileMime = files.image.mimetype;
+            const fieExtension = fileMime.split('/')[1];
 
-                try {
-                    const { unitID } = req.params;
-                    const assetInDB = await Asset.findOne({ "name": fields.name })
-                        .where("unit").equals(unitID);
+            if (fieExtension === 'jpg' ||
+                fieExtension === 'jpeg' ||
+                fieExtension === 'png') {
 
-                    if (assetInDB) return res.json({ message: "This asset already exists in this unit." })
-                    req.fields = fields;
-                    req.fields.image = image;
-                    next();
-                }
-                catch (e) {
-                    return res.json({ message: "Invalid request." })
+                const fileName = files.image.newFilename;
+                const fileStream = fs.createReadStream(files.image.filepath);
+
+                const uploadResult = await S3FileUpload(fileName, fileMime, fileStream);
+
+                if (!uploadResult.err) {
+                    if (req.method === "POST") {
+                        if (Object.keys(fields).length < 6) return res.json({ msg: "All fields are required." });
+
+                        req.fields = fields;
+                        req.fields.image = fileName;
+                        next()
+                    }
+                    else if (req.method === "PUT") {
+
+                        req.fields = fields;
+                        req.fields.image = fileName;
+                        next()
+                    }
                 }
             }
-            else if (req.method === "PUT") {
-                try {
-                    const assetInDB = await Asset.findById(req.params.id);
-
-                    if (!assetInDB) return res.json({ message: "This asset do not exists in this unit." })
-                    req.fields = fields;
-                    req.fields.image = image;
-                    next();
-                }
-                catch (err) {
-                    return res.json({ message: "Invalid request." })
-                }
+            else {
+                res.status(400).json({
+                    msg: "File type not allowed"
+                });
             }
+        } else {
+            res.status(400).json({
+                err,
+                message: "Bad request"
+            })
         }
     })
-
 }

@@ -28,6 +28,7 @@ function ModifyAssetModal({ showModal, setShowModal, data, setData, setAssets, u
 
     async function handleCloseModal(e) {
         e.preventDefault();
+        setError("");
         setData({});
         setShowModal(false);
     }
@@ -46,6 +47,7 @@ function ModifyAssetModal({ showModal, setShowModal, data, setData, setAssets, u
                 });
             const { data: assets } = await api.get(`/units/${unitView._id}/assets`);
             setAssets(assets);
+            setError("");
             setData({});
             setShowModal(false);
         }

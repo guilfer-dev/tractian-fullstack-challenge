@@ -1,3 +1,5 @@
+import S3FileRemove from "../helpers/S3FileRemove.js";
+
 import Asset from "../models/AssetModel.js";
 import Unit from "../models/UnitModel.js";
 
@@ -6,6 +8,10 @@ export default {
     create: async (req, res) => {
 
         const { unitID } = req.params;
+        const assetInDB = await Asset.findOne({ "name": fields.name })
+            .where("unit").equals(unitID);
+
+        if (assetInDB) return res.json({ message: "This asset already exists in this unit." })
 
         const { name,
             image,
@@ -81,12 +87,12 @@ export default {
 
     update: async (req, res) => {
 
-
         try {
             const asset = await Asset.findByIdAndUpdate(req.params.id, req.fields)
 
             if (!asset) return res.json("Asset does not exist.");
 
+            S3FileRemove(asset.image);
             return res.json({
                 msg: `Asset sucessfuly updated`
             });
