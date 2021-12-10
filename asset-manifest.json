@@ -1,0 +1,24 @@
+{
+  "files": {
+    "main.css": "/tractian-fullstack-challenge/static/css/main.af3280d7.chunk.css",
+    "main.js": "/tractian-fullstack-challenge/static/js/main.4c1370a0.chunk.js",
+    "main.js.map": "/tractian-fullstack-challenge/static/js/main.4c1370a0.chunk.js.map",
+    "runtime-main.js": "/tractian-fullstack-challenge/static/js/runtime-main.7f18a2cc.js",
+    "runtime-main.js.map": "/tractian-fullstack-challenge/static/js/runtime-main.7f18a2cc.js.map",
+    "static/css/2.383c0125.chunk.css": "/tractian-fullstack-challenge/static/css/2.383c0125.chunk.css",
+    "static/js/2.a4b53492.chunk.js": "/tractian-fullstack-challenge/static/js/2.a4b53492.chunk.js",
+    "static/js/2.a4b53492.chunk.js.map": "/tractian-fullstack-challenge/static/js/2.a4b53492.chunk.js.map",
+    "index.html": "/tractian-fullstack-challenge/index.html",
+    "static/css/2.383c0125.chunk.css.map": "/tractian-fullstack-challenge/static/css/2.383c0125.chunk.css.map",
+    "static/css/main.af3280d7.chunk.css.map": "/tractian-fullstack-challenge/static/css/main.af3280d7.chunk.css.map",
+    "static/js/2.a4b53492.chunk.js.LICENSE.txt": "/tractian-fullstack-challenge/static/js/2.a4b53492.chunk.js.LICENSE.txt",
+    "static/media/styles.css": "/tractian-fullstack-challenge/static/media/bg-login.81c2c9d0.jpg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.7f18a2cc.js",
+    "static/css/2.383c0125.chunk.css",
+    "static/js/2.a4b53492.chunk.js",
+    "static/css/main.af3280d7.chunk.css",
+    "static/js/main.4c1370a0.chunk.js"
+  ]
+}
