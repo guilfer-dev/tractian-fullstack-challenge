@@ -13,9 +13,11 @@ function NavBar({ states }) {
     const navigate = useNavigate();
 
     async function handleExit() {
-        await api.get("/logout");
-        localStorage.clear();
-        navigate("/login");
+
+        await api.get("/logout").finally(() => {
+            localStorage.clear();
+            navigate("/login");
+        })
     }
 
     return (
@@ -25,10 +27,15 @@ function NavBar({ states }) {
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav>
-                        <Navbar.Text>{`${states.companyName}`}</Navbar.Text>
+                        <Navbar.Text className="me-3">{`${states.companyName}`}</Navbar.Text>
                     </Nav>
-                    <Nav>
-                        <NavDropdown title={states.unitView.name} id="collasible-nav-dropdown" onSelect={eventKey => states.setUnitView(states.units[eventKey])}>
+                    <Nav className="navbar-unit">
+                        <Navbar.Text className="me-1">Unit(s):</Navbar.Text>
+                        <NavDropdown className="p-0" title={states.unitView.name || "All"} id="collasible-nav-dropdown"
+                            onSelect={eventKey =>
+                                eventKey === "all" ? states.setUnitView("all") : states.setUnitView(states.units[eventKey]
+                                )}>
+                            <NavDropdown.Item eventKey={"all"}>{"All"}</NavDropdown.Item>
                             {states.units.map((e, i) => (
                                 <NavDropdown.Item key={i} eventKey={i}>{e.name}</NavDropdown.Item>
                             ))}

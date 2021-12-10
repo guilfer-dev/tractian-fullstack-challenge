@@ -24,8 +24,6 @@ function AssetCard({ data, index, handleDelete, handleModify }) {
         }
     }
 
-    console.log(`${process.env.REACT_APP_API_URL}/${data.image}`)
-
     return (
         <Container>
             <Card className="asset-card">

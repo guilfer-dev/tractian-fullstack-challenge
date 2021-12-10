@@ -17,7 +17,6 @@ const UserSchema = new mongoose.Schema({
     },
     accessToken: {
         type: String,
-        unique: true
     },
     company: {
         type: mongoose.Schema.Types.ObjectId,

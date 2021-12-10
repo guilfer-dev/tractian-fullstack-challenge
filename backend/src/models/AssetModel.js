@@ -4,6 +4,7 @@ const AssetSchema = new mongoose.Schema({
 
     name: {
         type: String,
+        unique: true,
         trim: true,
         lowercase: true,
         required: true

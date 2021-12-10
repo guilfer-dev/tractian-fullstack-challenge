@@ -1,3 +1,8 @@
 .brand-link {
     text-decoration: none;
 }
+
+.navbar-unit {
+    flex-direction: row;
+    justify-content: flex-start;
+}

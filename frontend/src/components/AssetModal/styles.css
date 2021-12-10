@@ -14,3 +14,7 @@
 .hl-container {
     display: flex;
 }
+
+select, option {
+    text-transform: capitalize;
+}

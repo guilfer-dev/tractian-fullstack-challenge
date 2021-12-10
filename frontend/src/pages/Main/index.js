@@ -36,7 +36,7 @@ function Main() {
     // const navigate = useNavigate();
 
     const [units, setUnits] = useState([])
-    const [unitView, setUnitView] = useState({})
+    const [unitView, setUnitView] = useState("all")
     const [assets, setAssets] = useState([])
     const [showModal, setShowModal] = useState(false);
     const [assetData, setAssetData] = useState({});
@@ -48,7 +48,6 @@ function Main() {
             if (company._id) {
                 const { data: { units } } = await api.get(`/companies/${company._id}`);
                 setUnits(units);
-                setUnitView(units[0]);
             }
         }
 
@@ -59,7 +58,10 @@ function Main() {
     // fetch assets data from the api
     useEffect(() => {
         async function getData() {
-            if (unitView._id) {
+            if (unitView === "all" && company._id) {
+                const { data: assets } = await api.get(`/${company._id}/all-assets`);
+                setAssets(assets);
+            } else if (unitView._id) {
                 const { data: assets } = await api.get(`/units/${unitView._id}/assets`);
                 setAssets(assets);
             }
@@ -80,7 +82,7 @@ function Main() {
     async function handleDelete(index) {
         const deletion = window.confirm("Você tem certeza sobre deletar essa despesa? A ação não poderá ser desfeita");
         if (deletion) {
-            await api.delete(`/assets/${assets[index]._id}`)
+            await api.delete(`/asset/${assets[index]._id}`)
             const { data } = await api.get(`/units/${unitView._id}/assets`);
             setAssets(data);
         }
@@ -100,7 +102,7 @@ function Main() {
     return (
         <>
             <NavBar states={states} />
-            <h1 className="display-1 text-center">{unitView.name}</h1>
+            <h1 className="display-1 text-center">{unitView === "all" ? "All" : unitView.name}</h1>
             <Container>
                 <Tabs defaultActiveKey="sumary">
                     <Tab eventKey="sumary" title="Sumary">
@@ -122,7 +124,7 @@ function Main() {
                         </Container>
                     </Tab>
                     <Tab eventKey="assets" title="Assets" >
-                        <Button className="add-new-asset-btn" onClick={handleNewAsset}>Add new asset</Button>
+                        {unitView !== "all" && <Button className="add-new-asset-btn" onClick={handleNewAsset}>Add new asset</Button>}
                         <Container className="cards-container">
                             {assets.length > 0 ? assets.map((e, i) => (
                                 <AssetCard data={e} index={i} handleDelete={handleDelete} handleModify={handleModify} key={`card-${i}`} />

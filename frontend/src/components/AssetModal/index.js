@@ -12,30 +12,29 @@ function ModifyAssetModal({
     data,
     setData,
     setAssets,
-    unitView }
-) {
+    unitView }) {
 
-    const [error, setError] = useState("");
+    const [error, setError] = useState(" ");
 
+    // form states
     const [name, setName] = useState("");
     const [owner, setOwner] = useState("");
     const [model, setModel] = useState("");
     const [status, setStatus] = useState("");
     const [description, setDescription] = useState("");
-    const [healthLevel, setHealthLevel] = useState("");
+    const [healthLevel, setHealthLevel] = useState(0);
     const [image, setImage] = useState({});
 
     useEffect(() => {
-        setName(data.name);
-        setOwner(data.owner);
-        setModel(data.model);
-        setStatus(data.status);
-        setDescription(data.description);
-        setHealthLevel(data.healthLevel);
+        setName(data.name || "");
+        setOwner(data.owner || "");
+        setModel(data.model || "");
+        setStatus(data.status || "");
+        setDescription(data.description || "");
+        setHealthLevel(data.healthLevel || 0);
     }, [data])
 
     async function handleCloseModal(e) {
-        e.preventDefault();
         setError("");
         setData({});
         setImage({});
@@ -67,8 +66,8 @@ function ModifyAssetModal({
 
         try {
 
-            if (data) {
-                await api.put(`/assets/${data._id}`, form);
+            if (data._id) {
+                await api.put(`/asset/${data._id}`, form);
             } else {
                 await api.post(`/units/${unitView._id}`, form);
             }
@@ -86,7 +85,7 @@ function ModifyAssetModal({
     }
 
     return (
-        <Modal show={showModal} onHide={() => setShowModal(false)}>
+        <Modal show={showModal} onHide={handleCloseModal}>
             <Modal.Header closeButton>
                 <Modal.Title>{data ? "Modify asset" : "New asset"}</Modal.Title>
             </Modal.Header>
@@ -115,7 +114,7 @@ function ModifyAssetModal({
                         <Form.Select required={!data} className="w-50" type="text" value={status}
                             onChange={e => setStatus(e.target.value)}
                         >
-                            {["", "Running", "Alerting", "Stopped"].map(e => <option value={e}>{e}</option>)}
+                            {["", "running", "alerting", "stopped"].map((e, i) => <option key={i} value={e}>{e}</option>)}
                         </Form.Select>
                     </Form.Group>
                     <Form.Group className="d-flex justify-content-evenly align-items-center mb-2">

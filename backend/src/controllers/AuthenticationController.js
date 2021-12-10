@@ -55,7 +55,7 @@ export default {
 
             const { username } = req.decoded;
 
-            let user = await User.findOne({ name: username });
+            const user = await User.findOne({ name: username });
             user.accessToken = "";
             await user.save();
 

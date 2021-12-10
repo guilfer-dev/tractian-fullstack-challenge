@@ -1,52 +1,26 @@
+import Company from "../models/CompanyModel.js";
 import Asset from "../models/AssetModel.js";
-import Unit from "../models/UnitModel.js";
 
 export default {
-
-    create: async (req, res) => {
-
-        const { unitName } = req.params;
-
-        const { name,
-            image,
-            description,
-            model,
-            owner,
-            status,
-            healthLevel } = req.fields;
-
-        try {
-            const unit = await Unit.findOne({ "name": unitName });
-            const asset = await Asset.create({
-                name,
-                imagePath: image,
-                description,
-                model,
-                owner,
-                status,
-                healthLevel,
-                unit: unit._id
-            });
-
-            unit.assets.push(asset._id);
-            await unit.save();
-            return res.json(asset);
-        }
-        catch (err) {
-            console.error(err);
-            return res.status(400).json({
-                err,
-                msg: "Unable to create the unit."
-            });
-        }
-    },
-
     index: async (req, res) => {
 
+        const { companyID } = req.params
+
         try {
-            const assets = await Asset.find({})
-                .select("-__v")
-                .populate("unit", "-assets -__v");
+            const companyInDB = await Company.findById(companyID)
+                .select("units")
+
+            if (!companyInDB) return res.status(400).json({ msg: "Company not found" })
+
+            const assets = [];
+
+            for (let unit in companyInDB.units) {
+                const [unitAssets] = await Asset.find({})
+                    .where("unit").equals(companyInDB.units[unit])
+                    .select("-__v")
+                if (unitAssets) assets.push(unitAssets);
+            }
+
             return res.json(assets);
         }
         catch (err) {
@@ -54,69 +28,6 @@ export default {
             return res.status(400).json({
                 err,
                 msg: "Unable to list units."
-            });
-        }
-    },
-
-    show: async (req, res) => {
-
-        const { id } = req.params;
-
-        try {
-            const assets = await Asset.findById(id)
-                .select("-__v")
-                .populate("unit", "-assets -__v")
-            return res.json(assets)
-        }
-        catch (err) {
-            console.error(err);
-            return res.status(400).json({
-                err,
-                msg: "Unable to locate the company."
-            });
-        }
-    },
-
-    update: async (req, res) => {
-
-
-        try {
-            const asset = await Asset.findByIdAndUpdate(req.params.id, req.fields)
-
-            if (!asset) return res.status(400).json("Asset does not exist.");
-
-            return res.json({
-                msg: `Asset sucessfuly updated`
-            });
-
-        }
-        catch (err) {
-            console.error(err);
-            return res.status(500).json({
-                err,
-                msg: "Unable to update the asset."
-            });
-        }
-    },
-
-    delete: async (req, res) => {
-
-        const { id } = req.params
-
-        try {
-            const asset = await Asset.findByIdAndDelete(id)
-            if (!asset) return res.status(400).json("Asset does not exist.");
-
-            const unit = await Unit.findById(asset.unit);
-            unit.assets.pull(id);
-            await unit.save();
-            return res.json("Asset sucessfuly removed.");
-        }
-        catch (err) {
-            console.log(err);
-            return res.status(500).json({
-                err,
-                msg: "Unable to delete the asset."
             });
         }
     },
