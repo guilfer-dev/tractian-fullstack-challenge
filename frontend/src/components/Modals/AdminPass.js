@@ -20,6 +20,7 @@ function AdminPass({ states }) {
     const [password, setPassword] = useState("");
 
     // given the correct password, execute stored action, then reset states or prompt error
+    // THIS FEATURE IS NOT COMPLETED YET AND THE ROUTES ARE NOT PROTECTED
     async function validatePassword() {
         try {
             await api.post("/master", { password });

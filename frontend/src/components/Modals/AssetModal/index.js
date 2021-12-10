@@ -14,7 +14,7 @@ function ModifyAssetModal({ states: {
     setAssets,
     unitView } }) {
 
-    const [error, setError] = useState(" ");
+    const [error, setError] = useState("");
 
     // form states
     const [name, setName] = useState("");

@@ -15,9 +15,9 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-app.use("/users", UserRoutes);
+app.use("/", UserRoutes);
 app.use("/", AuthenticationRoutes);
-app.use("/companies", CompanyRoutes);
+app.use("/", CompanyRoutes);
 app.use("/", UnitRoutes);
 app.use("/", AssetRoutes);
 

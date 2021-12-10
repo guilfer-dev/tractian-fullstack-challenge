@@ -6,16 +6,15 @@ export default {
 
     create: async (req, res) => {
 
-        const { name } = req.body;
-        if (!name) return res.status(400).json({ message: "Provide the name of the new company" });
+        const { name, company: companyName } = req.body;
 
-        const { companyName } = req.params;
+        if (!name || !companyName) return res.status(400).json({ msg: "Name of the unit or company information is missing" });
 
         try {
             const [company] = await Company.find({ "name": companyName }).populate("units");
 
             const unitInDB = company.units.find(e => e.name === name);
-            if (unitInDB) return res.status(400).json({ message: "This unit already exists in this company." });
+            if (unitInDB) return res.status(400).json({ msg: "This unit already exists in this company." });
 
             const unit = await Unit.create({ name, company: company._id });
             company.units.push(unit);

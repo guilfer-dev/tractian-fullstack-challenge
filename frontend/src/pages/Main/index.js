@@ -9,14 +9,15 @@ import {
     Row,
     Tab,
     Tabs,
-    Button
+    Button,
+    Alert
 } from 'react-bootstrap'
 
 // services and helpers
 import api from "../../services/api.js"
 
 // variables
-import statusChart from "../../variables/charts/statusCharts"
+import statusChart from "../../variables/charts/statusChart"
 import healthLevelChart from "../../variables/charts/healthLevelChart"
 
 // components
@@ -102,6 +103,7 @@ function Main() {
             <Container>
                 <Tabs defaultActiveKey="sumary">
                     <Tab eventKey="sumary" title="Sumary">
+                        <Alert variant="danger" className="error">Feature under development: This charts don't represent actual data!</Alert>
                         <Container>
                             <Row className="justify-content-md-center">
                                 <Col md="auto">

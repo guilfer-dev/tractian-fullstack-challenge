@@ -3,10 +3,10 @@ import UserController from "../controllers/UserController.js";
 
 const route = Router();
 
-route.post('/', UserController.create);
-route.get('/', UserController.index);
-route.get('/:id', UserController.show);
-route.put('/:id', UserController.update);
-route.delete('/:id', UserController.delete);
+route.post('/new-user', UserController.create);
+route.get('/users', UserController.index);
+route.get('/users/:id', UserController.show);
+route.put('/users/:id', UserController.update);
+route.delete('/users/:id', UserController.delete);
 
 export default route;

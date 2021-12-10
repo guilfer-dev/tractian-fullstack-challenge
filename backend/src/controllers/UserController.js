@@ -6,14 +6,14 @@ export default {
     create: async (req, res) => {
 
         const { name, company } = req.body;
-        if (!name || !company) return res.status(400).json({ message: "Name or company information is missing." });
+        if (!name || !company) return res.status(400).json({ msg: "Name or company information is missing" });
 
         try {
             const userInDB = await User.findOne({ name });
-            if (userInDB) return res.status(400).json({ message: "This user already exists." });
+            if (userInDB) return res.status(400).json({ msg: "This user already exists" });
 
             const companyInDB = await Company.findOne({ name: company })
-            if (!companyInDB) return res.status(400).json({ message: "This company does not exist." });
+            if (!companyInDB) return res.status(400).json({ msg: "This company does not exist" });
 
             const loginID = Math.random().toString(36).slice(2).toUpperCase();
             const user = await User.create({
@@ -45,15 +45,8 @@ export default {
 
         try {
             const users = await User.find({})
-                .populate("company", "name");
-
-            for (let user in users) {
-                if (users[user].accessToken) {
-                    users[user].accessToken = true;
-                } else {
-                    users[user].accessToken = false;
-                }
-            }
+                .populate("company", "-users -units")
+                .select("-accessToken");
 
             return res.json(users);
         }

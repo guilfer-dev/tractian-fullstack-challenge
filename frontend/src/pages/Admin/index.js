@@ -15,8 +15,9 @@ import api from "../../services/api.js"
 
 // components
 
-import AdminEdit from "../../components/Modals/AdminEdit"
 import AdminAskEdit from "../../components/Modals/AdminAskEdit"
+import AdminNewData from "../../components/Modals/AdminNewData"
+import AdminEdit from "../../components/Modals/AdminEdit"
 import AdminPass from "../../components/Modals/AdminPass"
 
 // styles
@@ -28,6 +29,7 @@ function Admin() {
     const [pwModal, setPWModal] = useState(false);
     const [askEditModal, setAskEditModal] = useState(false);
     const [editionModal, setEditionModal] = useState(false);
+    const [newDataModal, setNewDataModal] = useState(false);
     const [showPanel, setShowPanel] = useState(false);
     const [tabKey, setTabKey] = useState("users");
 
@@ -96,6 +98,7 @@ function Admin() {
         setAskEditModal(false);
         setPWModal(false);
         setEditionModal(false);
+        setNewDataModal(false);
     }
 
     return (
@@ -114,12 +117,16 @@ function Admin() {
                         <Tabs activeKey={tabKey} onSelect={(k) => { askPassword(setTabKey, [k]) }}>
                             <Tab eventKey="users" title="USERS">
                                 <Container>
-                                    <Button className="add-new-asset-btn">Add new user</Button>
+                                    <Button className="add-new-asset-btn" onClick={() => {
+                                        setActionTarget(["new-user"]);
+                                        setNewDataModal(true);
+                                    }}> new user</Button>
                                     <Table striped hover responsive className="mt-2">
                                         <thead>
                                             <tr>
                                                 <th>Name</th>
-                                                <th>Status</th>
+                                                <th>Company</th>
+                                                <th>Login ID</th>
                                                 <th>ID</th>
                                             </tr>
                                         </thead>
@@ -128,10 +135,11 @@ function Admin() {
                                                 < tr key={i} onClick={(evt) => {
                                                     const id = evt.target.closest("tr").querySelector(".id").innerHTML;
                                                     setActionTarget(["users", id]);
-                                                    setAskEditModal(true);
+                                                    setAskEditModal(setNewDataModal);
                                                 }}>
                                                     <td>{e.name}</td>
-                                                    <td>{e.accessToken ? "online" : "offline"}</td>
+                                                    <td>{e.company.name}</td>
+                                                    <td>{e.loginID}</td>
                                                     <td className="id">{e._id}</td>
                                                 </tr>
                                             )}
@@ -141,7 +149,10 @@ function Admin() {
                             </Tab>
                             <Tab eventKey="companies" title="COMPANIES">
                                 <Container>
-                                    <Button className="add-new-asset-btn">Add new company</Button>
+                                    <Button className="add-new-asset-btn" onClick={() => {
+                                        setActionTarget(["new-company"]);
+                                        setNewDataModal(true);
+                                    }}>Add new company</Button>
                                     <Table striped hover responsive className="mt-2">
                                         <thead>
                                             <tr>
@@ -166,7 +177,10 @@ function Admin() {
                             </Tab>
                             <Tab eventKey="units" title="UNITS">
                                 <Container>
-                                    <Button className="add-new-asset-btn">Add new unit</Button>
+                                    <Button className="add-new-asset-btn" onClick={() => {
+                                        setActionTarget(["new-unit"]);
+                                        setNewDataModal(true);
+                                    }}>Add new unit</Button>
                                     <Table striped hover responsive className="mt-2">
                                         <thead>
                                             <tr>
@@ -200,6 +214,7 @@ function Admin() {
             {/* render modals */}
             <AdminAskEdit states={{ askEditModal, setEditionModal, actionTarget, askPassword, clearStates, refreshData }} />
             <AdminEdit states={{ editionModal, actionTarget, askPassword, clearStates, refreshData }} />
+            <AdminNewData states={{ newDataModal, actionTarget, askPassword, clearStates, refreshData }} />
             <AdminPass states={{ pwModal, action, clearStates }} />
         </>
     )
