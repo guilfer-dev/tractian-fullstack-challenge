@@ -4,15 +4,15 @@ import { Modal, Button, Form, Alert } from 'react-bootstrap'
 import "./styles.css"
 
 // services
-import api from "../../services/api"
+import api from "../../../services/api"
 
-function ModifyAssetModal({
+function ModifyAssetModal({ states: {
     showModal,
     setShowModal,
-    data,
-    setData,
+    assetData: data,
+    setAssetData: setData,
     setAssets,
-    unitView }) {
+    unitView } }) {
 
     const [error, setError] = useState(" ");
 
@@ -25,6 +25,7 @@ function ModifyAssetModal({
     const [healthLevel, setHealthLevel] = useState(0);
     const [image, setImage] = useState({});
 
+    // set data on modal based on data set when the modal was prompted
     useEffect(() => {
         setName(data.name || "");
         setOwner(data.owner || "");
@@ -34,6 +35,7 @@ function ModifyAssetModal({
         setHealthLevel(data.healthLevel || 0);
     }, [data])
 
+    // close modal and clean states
     async function handleCloseModal(e) {
         setError("");
         setData({});
@@ -46,6 +48,7 @@ function ModifyAssetModal({
 
         const form = new FormData()
 
+        // data collected from form
         const newData = {
             name,
             owner,
@@ -55,6 +58,7 @@ function ModifyAssetModal({
             healthLevel,
         }
 
+        // grants that only new data is sent to the endpoint
         for (let item in newData) {
 
             if (newData[item] !== data[item]) {
@@ -62,16 +66,19 @@ function ModifyAssetModal({
             }
         }
 
+        // grants that only if an image is selected, it will be sent to the endpoint
         if (!!image.name) form.append("image", image);
 
         try {
 
+            //if asset has an id, update otherwise, create new asset
             if (data._id) {
                 await api.put(`/assets/${data._id}`, form);
             } else {
                 await api.post(`/units/${unitView._id}`, form);
             }
 
+            //reload assets
             const { data: assets } = await api.get(`/units/${unitView._id}/assets`);
             setAssets(assets);
             setError("");
@@ -85,6 +92,7 @@ function ModifyAssetModal({
     }
 
     return (
+        // prompt user with a form with asset data to be updated or created
         <Modal show={showModal} onHide={handleCloseModal}>
             <Modal.Header closeButton>
                 <Modal.Title>{data ? "Modify asset" : "New asset"}</Modal.Title>

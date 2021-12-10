@@ -4,19 +4,28 @@ import {
     Button,
     Modal,
     Form,
+    Alert
 } from 'react-bootstrap'
 
 // services and helpers
 import api from "../../services/api.js"
 
-function MainModal({ editionModal, actionTarget, askPassword, clearStates }) {
+//prompt user for new data for given field
+function AdminEdit({ states: {
+    editionModal,
+    actionTarget,
+    clearStates,
+    askPassword
+} }) {
 
     // form data
     const [name, setName] = useState("")
 
+    //update db
     async function updateItem(path, id, data) {
         await api.put(`/${path}/${id}`, data)
     }
+
     return (
         <Modal show={editionModal} >
             <Modal.Header>
@@ -27,6 +36,7 @@ function MainModal({ editionModal, actionTarget, askPassword, clearStates }) {
                 <Form.Control required type="text" id="master-password" value={name}
                     onChange={(e) => setName(e.target.value)}
                 />
+                <Alert variant="danger" className="error">Due to major implications, only "name" can be updated</Alert>
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="secondary" onClick={clearStates}>
@@ -40,4 +50,4 @@ function MainModal({ editionModal, actionTarget, askPassword, clearStates }) {
     )
 }
 
-export default MainModal;
+export default AdminEdit;

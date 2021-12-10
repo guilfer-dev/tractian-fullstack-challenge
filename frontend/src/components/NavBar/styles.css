@@ -6,3 +6,8 @@
     flex-direction: row;
     justify-content: flex-start;
 }
+
+.unit-name,
+.company-name {
+    text-transform: uppercase;
+}

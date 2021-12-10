@@ -22,7 +22,7 @@ import healthLevelChart from "../../variables/charts/healthLevelChart"
 // components
 import NavBar from "../../components/NavBar"
 import AssetCard from "../../components/AssetCard"
-import AssetModal from "../../components/AssetModal"
+import AssetModal from "../../components/Modals/AssetModal"
 
 // styles
 import "./styles.css"
@@ -31,8 +31,6 @@ import "./charts.css"
 function Main() {
 
     highcharts3d(Highcharts);
-
-    // const navigate = useNavigate();
 
     const [units, setUnits] = useState([])
     const [unitView, setUnitView] = useState("all")
@@ -68,15 +66,7 @@ function Main() {
 
         getData();
 
-    }, [unitView])
-
-    const states = {
-        companyName: company.name,
-        companyID: company._id,
-        unitView,
-        setUnitView,
-        units
-    }
+    }, [unitView, company._id])
 
     async function handleDelete(index) {
         const deletion = window.confirm("Você tem certeza sobre deletar essa despesa? A ação não poderá ser desfeita");
@@ -100,7 +90,14 @@ function Main() {
 
     return (
         <>
-            <NavBar states={states} />
+            {/* share states between navbar and main page */}
+            <NavBar states={{
+                companyName: company.name,
+                companyID: company._id,
+                unitView,
+                setUnitView,
+                units
+            }} />
             <h1 className="display-1 text-center">{unitView === "all" ? "All" : unitView.name}</h1>
             <Container>
                 <Tabs defaultActiveKey="sumary">
@@ -123,10 +120,12 @@ function Main() {
                         </Container>
                     </Tab>
                     <Tab eventKey="assets" title="Assets" >
+                        {/* show button to add new asset only when user is on a a unit tab */}
                         {unitView !== "all" && <Button className="add-new-asset-btn" onClick={handleNewAsset}>Add new asset</Button>}
                         <Container className="cards-container">
+                            {/* programmatically loads cards with asssets */}
                             {assets.length > 0 ? assets.map((e, i) => (
-                                <AssetCard data={e} index={i} handleDelete={handleDelete} handleModify={handleModify} key={`card-${i}`} />
+                                <AssetCard states={{ data: e, index: i, handleDelete, handleModify }} key={`card-${i}`} />
                             )) :
                                 "Network failure or there are no assets available for this unit"
                             }
@@ -134,7 +133,15 @@ function Main() {
                     </Tab>
                 </Tabs>
             </Container>
-            <AssetModal showModal={showModal} setShowModal={setShowModal} data={assetData} setData={setAssetData} setAssets={setAssets} unitView={unitView} />
+            <AssetModal
+                states={{
+                    showModal,
+                    setShowModal,
+                    assetData,
+                    setAssetData,
+                    setAssets,
+                    unitView
+                }} />
         </>
 
 

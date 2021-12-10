@@ -1,18 +1,13 @@
 // libraries
 import React, { useState, useEffect } from "react";
 
-import { useNavigate } from "react-router-dom";
-
 import {
     Container,
     Navbar,
     Tab,
     Tabs,
     Button,
-    Modal,
-    Form,
-    Table,
-    Alert
+    Table
 } from 'react-bootstrap'
 
 // services and helpers
@@ -20,17 +15,15 @@ import api from "../../services/api.js"
 
 // components
 
-import MainEdit from "../../components/Modals/MainEdit"
+import AdminEdit from "../../components/Modals/AdminEdit"
+import AdminAskEdit from "../../components/Modals/AdminAskEdit"
+import AdminPass from "../../components/Modals/AdminPass"
 
 // styles
 import "./styles.css"
 
 function Admin() {
 
-    const navigate = useNavigate();
-
-    // errors
-    const [error, setError] = useState("");
     // modals and views
     const [pwModal, setPWModal] = useState(false);
     const [askEditModal, setAskEditModal] = useState(false);
@@ -39,7 +32,6 @@ function Admin() {
     const [tabKey, setTabKey] = useState("users");
 
     // actions
-    const [password, setPassword] = useState("");
     const [action, setAction] = useState({});
     const [actionTarget, setActionTarget] = useState([]);
 
@@ -48,6 +40,7 @@ function Admin() {
     const [companies, setCompanies] = useState([]);
     const [units, setUnits] = useState([]);
 
+    // show panel when master password is correct
     useEffect(() => {
         (async () => {
             askPassword(setShowPanel, [true]);
@@ -56,6 +49,7 @@ function Admin() {
         })()
     }, [])
 
+    // ask for password and update data from api
     useEffect(() => {
 
         (async () => {
@@ -83,43 +77,29 @@ function Admin() {
 
     }, [tabKey])
 
+    // handler for asking password
     function askPassword(fn, params) {
         setPWModal(true);
+        // define action that will be used after the correct input of the password
         setAction({
             fn,
             params,
         })
     }
 
-    async function validatePassword() {
-        try {
-            await api.post("/master", { password });
-            action.fn(...action.params);
-            clearStates();
-        }
-        catch (err) {
-            setError("Unable to authenticate")
-        }
-    }
-
-    async function deleteItem(path, id) {
-        await api.delete(`/${path}/${id}`);
-    }
-
+    // clear all action and modal states
     function clearStates() {
         setAction({});
         setActionTarget([]);
         setAskEditModal(false);
-        setError("");
-        setPassword("");
         setPWModal(false);
         setEditionModal(false);
-
     }
 
     return (
         <>{showPanel ?
             <>
+                {/* navbar with only the name of the aplication, once there will be no other funcionality */}
                 <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
                     <Container className="nav-bar" fluid>
                         <Navbar.Brand>Assets Manager</Navbar.Brand>
@@ -127,6 +107,7 @@ function Admin() {
                 </Navbar>
                 <Container className="mt-5">
                     <h1 className="text-center"> ADMINISTRATION PANEL</h1>
+                    {/* container with tables reggarding each administration task and infos */}
                     <Container className="mt-5">
                         <Tabs activeKey={tabKey} onSelect={(k) => { askPassword(setTabKey, [k]) }}>
                             <Tab eventKey="users" title="USERS">
@@ -214,58 +195,10 @@ function Admin() {
             </>
             : null
         }
-            {/* password modal */}
-            <>
-                <Modal show={pwModal}>
-                    <Modal.Body>
-                        <Form.Label className="fw-bold">Master Password</Form.Label>
-                        <Form.Control required type="password" id="master-password" value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                        />
-                        <label>
-                            <input type="checkbox" value={password}
-                                onClick={() => {
-                                    var x = document.getElementById("master-password");
-                                    if (x.type === "password") {
-                                        x.type = "text";
-                                    } else {
-                                        x.type = "password";
-                                    }
-                                }}
-                            /> Show Password
-                        </label>
-                        {error && <Alert variant="danger" className="error">{error}</Alert>}
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <Button variant="danger" onClick={() => navigate("/")}>
-                            Close
-                        </Button>
-                        <Button variant="primary" onClick={() => validatePassword()}>
-                            OK
-                        </Button>
-                    </Modal.Footer>
-                </Modal>
-            </>
-            {/* ask edit modal */}
-            <>
-                <Modal show={askEditModal}>
-                    <Modal.Header>
-                        <Modal.Title>ACTION</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Footer>
-                        <Button variant="secondary" onClick={clearStates}>
-                            Cancel
-                        </Button>
-                        <Button variant="danger" onClick={() => askPassword(deleteItem, actionTarget)}>
-                            Delete
-                        </Button>
-                        <Button variant="primary" onClick={() => setEditionModal(true)}>
-                            Edit
-                        </Button>
-                    </Modal.Footer>
-                </Modal>
-            </>
-            <MainEdit editionModal={editionModal} actionTarget={actionTarget} setActionTarget={setActionTarget} askPassword={askPassword} clearStates={clearStates} />
+            {/* render modals */}
+            <AdminAskEdit states={{ askEditModal, setEditionModal, actionTarget, askPassword, clearStates }} />
+            <AdminEdit states={{ editionModal, actionTarget, askPassword, clearStates }} />
+            <AdminPass states={{ pwModal, action, clearStates }} />
         </>
     )
 }

@@ -23,6 +23,7 @@ const App = () => {
 
     const [auth, setAuth] = useState(false);
 
+    // verify if user is logged, then redirects accordingly
     function PrivateRoute({ children }) {
 
         const location = useLocation();
@@ -43,6 +44,7 @@ const App = () => {
     }
 
     return (
+        // admin requires password on every step
         <BrowserRouter>
             <Routes>
                 <Route path="/login" element={<Login />} />

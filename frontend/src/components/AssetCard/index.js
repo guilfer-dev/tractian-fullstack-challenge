@@ -5,7 +5,12 @@ import { Card, Badge, Container, Button } from 'react-bootstrap'
 // style
 import "./styles.css"
 
-function AssetCard({ data, index, handleDelete, handleModify }) {
+function AssetCard({ states: {
+    data,
+    index,
+    handleDelete,
+    handleModify
+} }) {
 
     function parseStatus(status) {
 
@@ -25,6 +30,7 @@ function AssetCard({ data, index, handleDelete, handleModify }) {
     }
 
     return (
+        // render new asset based on given asset list
         <Container>
             <Card className="asset-card">
                 <Card.Img className="card-img" variant="top" src={`${process.env.REACT_APP_IMG_URL}/${data.image}`} />
@@ -54,8 +60,8 @@ function AssetCard({ data, index, handleDelete, handleModify }) {
                             value={data.healthLevel} readOnly />
                     </Card.Text>
                     <div className="d-flex justify-content-evenly">
-                        <Button variant="primary" onClick={evt => handleModify(index)}>Modify</Button>
-                        <Button variant="danger" onClick={evt => handleDelete(index)}>Delete</Button>
+                        <Button variant="primary" onClick={() => handleModify(index)}>Modify</Button>
+                        <Button variant="danger" onClick={() => handleDelete(index)}>Delete</Button>
                     </div>
                 </Card.Body>
             </Card >
