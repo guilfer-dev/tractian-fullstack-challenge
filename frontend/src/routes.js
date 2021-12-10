@@ -13,6 +13,7 @@ import api from "./services/api"
 // pages
 import Login from "./pages/Login"
 import Main from "./pages/Main"
+import Admin from "./pages/Admin"
 import NotFound from "./pages/NotFound"
 
 // styles
@@ -45,6 +46,7 @@ const App = () => {
         <BrowserRouter>
             <Routes>
                 <Route path="/login" element={<Login />} />
+                <Route path="/admin" element={<Admin />} />
                 <Route path="/" element={
                     <PrivateRoute>
                         <Main />

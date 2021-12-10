@@ -38,9 +38,9 @@ export default {
     index: async (req, res) => {
 
         try {
-            const units = await Company.find({})
-                .select("name units")
-                .populate("units", "name");
+            const units = await Unit.find({})
+                .select("-__v")
+                .populate("company", "name");
             return res.json(units);
         }
         catch (err) {

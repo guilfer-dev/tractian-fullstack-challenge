@@ -1,6 +1,5 @@
 // libraries
 import { useState, useEffect } from "react";
-// import { useNavigate } from "react-router-dom";
 import Highcharts from "highcharts";
 import HighchartsReact from 'highcharts-react-official'
 import highcharts3d from 'highcharts/highcharts-3d'

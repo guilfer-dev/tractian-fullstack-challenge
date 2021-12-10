@@ -72,5 +72,9 @@ export default {
 
     me: (req, res) => {
         return res.end();
+    },
+
+    master: (req, res) => {
+        return res.end();
     }
 }
