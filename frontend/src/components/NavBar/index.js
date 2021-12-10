@@ -36,7 +36,7 @@ function NavBar({ states }) {
                             onSelect={eventKey =>
                                 eventKey === "all" ? states.setUnitView("all") : states.setUnitView(states.units[eventKey]
                                 )}>
-                            <NavDropdown.Item eventKey={"all"}>{"All"}</NavDropdown.Item>
+                            <NavDropdown.Item eventKey={"all"}>ALL</NavDropdown.Item>
                             {states.units.map((e, i) => (
                                 <NavDropdown.Item className="unit-name" key={i} eventKey={i}>{e.name}</NavDropdown.Item>
                             ))}

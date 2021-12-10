@@ -8,6 +8,7 @@
 }
 
 .unit-name,
-.company-name {
+.company-name,
+#collasible-nav-dropdown {
     text-transform: uppercase;
 }

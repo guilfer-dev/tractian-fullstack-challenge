@@ -19,7 +19,7 @@ function AdminAskEdit({ states: {
     // delete item if requested
     async function deleteItem(path, id) {
         await api.delete(`/${path}/${id}`);
-        refreshData('path')
+        refreshData(path);
     }
 
     return (

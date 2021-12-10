@@ -98,7 +98,7 @@ function Main() {
                 setUnitView,
                 units
             }} />
-            <h1 className="display-1 text-center">{unitView === "all" ? "All" : unitView.name}</h1>
+            <h1 className="display-1 text-center">{unitView === "all" ? "ALL" : unitView.name.toUpperCase()}</h1>
             <Container>
                 <Tabs defaultActiveKey="sumary">
                     <Tab eventKey="sumary" title="Sumary">
