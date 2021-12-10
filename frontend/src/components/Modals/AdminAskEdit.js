@@ -13,11 +13,13 @@ function AdminAskEdit({ states: {
     clearStates,
     actionTarget,
     askPassword,
-    setEditionModal
+    setEditionModal,
+    refreshData
 } }) {
     // delete item if requested
     async function deleteItem(path, id) {
         await api.delete(`/${path}/${id}`);
+        refreshData('path')
     }
 
     return (

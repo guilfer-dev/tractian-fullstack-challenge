@@ -52,30 +52,32 @@ function Admin() {
     // ask for password and update data from api
     useEffect(() => {
 
-        (async () => {
-            switch (tabKey) {
-                case ("users"): {
-                    const { data } = await api.get("/users");
-                    setUsers(data);
-                    break;
-                }
-                case ("companies"): {
-                    const { data } = await api.get("/companies");
-                    setCompanies(data);
-                    break;
-                }
-                case ("units"): {
-                    const { data } = await api.get("/units");
-                    setUnits(data);
-                    break;
-                }
-                default: {
-                    break;
-                }
-            }
-        })();
+        refreshData(tabKey)
 
     }, [tabKey])
+
+    async function refreshData(info) {
+        switch (info) {
+            case ("users"): {
+                const { data } = await api.get("/users");
+                setUsers(data);
+                break;
+            }
+            case ("companies"): {
+                const { data } = await api.get("/companies");
+                setCompanies(data);
+                break;
+            }
+            case ("units"): {
+                const { data } = await api.get("/units");
+                setUnits(data);
+                break;
+            }
+            default: {
+                break;
+            }
+        }
+    }
 
     // handler for asking password
     function askPassword(fn, params) {
@@ -196,8 +198,8 @@ function Admin() {
             : null
         }
             {/* render modals */}
-            <AdminAskEdit states={{ askEditModal, setEditionModal, actionTarget, askPassword, clearStates }} />
-            <AdminEdit states={{ editionModal, actionTarget, askPassword, clearStates }} />
+            <AdminAskEdit states={{ askEditModal, setEditionModal, actionTarget, askPassword, clearStates, refreshData }} />
+            <AdminEdit states={{ editionModal, actionTarget, askPassword, clearStates, refreshData }} />
             <AdminPass states={{ pwModal, action, clearStates }} />
         </>
     )

@@ -15,7 +15,8 @@ function AdminEdit({ states: {
     editionModal,
     actionTarget,
     clearStates,
-    askPassword
+    askPassword,
+    refreshData
 } }) {
 
     // form data
@@ -24,6 +25,7 @@ function AdminEdit({ states: {
     //update db
     async function updateItem(path, id, data) {
         await api.put(`/${path}/${id}`, data)
+        refreshData(path);
     }
 
     return (
