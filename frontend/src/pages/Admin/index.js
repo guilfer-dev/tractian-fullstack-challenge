@@ -18,6 +18,10 @@ import {
 // services and helpers
 import api from "../../services/api.js"
 
+// components
+
+import MainEdit from "../../components/Modals/MainEdit"
+
 // styles
 import "./styles.css"
 
@@ -25,19 +29,24 @@ function Admin() {
 
     const navigate = useNavigate();
 
+    // errors
     const [error, setError] = useState("");
+    // modals and views
     const [pwModal, setPWModal] = useState(false);
     const [askEditModal, setAskEditModal] = useState(false);
-    const [actionTarget, setActionTarget] = useState([]);
-    const [modal, setModal] = useState(false);
-    const [password, setPassword] = useState("");
+    const [editionModal, setEditionModal] = useState(false);
     const [showPanel, setShowPanel] = useState(false);
     const [tabKey, setTabKey] = useState("users");
+
+    // actions
+    const [password, setPassword] = useState("");
     const [action, setAction] = useState({});
+    const [actionTarget, setActionTarget] = useState([]);
+
+    // api data
     const [users, setUsers] = useState([]);
     const [companies, setCompanies] = useState([]);
     const [units, setUnits] = useState([]);
-
 
     useEffect(() => {
         (async () => {
@@ -87,7 +96,6 @@ function Admin() {
             await api.post("/master", { password });
             action.fn(...action.params);
             clearStates();
-
         }
         catch (err) {
             setError("Unable to authenticate")
@@ -98,17 +106,15 @@ function Admin() {
         await api.delete(`/${path}/${id}`);
     }
 
-    async function updateItem(path, id, data) {
-        await api.put(`/${path}/${id}`, data)
-    }
-
     function clearStates() {
         setAction({});
         setActionTarget([]);
         setAskEditModal(false);
         setError("");
         setPassword("");
-        setPWModal(false)
+        setPWModal(false);
+        setEditionModal(false);
+
     }
 
     return (
@@ -253,31 +259,13 @@ function Admin() {
                         <Button variant="danger" onClick={() => askPassword(deleteItem, actionTarget)}>
                             Delete
                         </Button>
-                        <Button variant="primary" onClick={() => setAskEditModal(false)}>
+                        <Button variant="primary" onClick={() => setEditionModal(true)}>
                             Edit
                         </Button>
                     </Modal.Footer>
                 </Modal>
             </>
-            {/* ask edit modal */}
-            <>
-                <Modal show={false}>
-                    <Modal.Header>
-                        <Modal.Title>ACTION</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Footer>
-                        <Button variant="secondary" onClick={() => validatePassword()}>
-                            Cancel
-                        </Button>
-                        <Button variant="danger" onClick={() => setAskEditModal(false)}>
-                            Delete
-                        </Button>
-                        <Button variant="primary" onClick={() => navigate("/")}>
-                            Edit
-                        </Button>
-                    </Modal.Footer>
-                </Modal>
-            </>
+            <MainEdit editionModal={editionModal} actionTarget={actionTarget} setActionTarget={setActionTarget} askPassword={askPassword} clearStates={clearStates} />
         </>
     )
 }

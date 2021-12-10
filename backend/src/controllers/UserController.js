@@ -55,8 +55,6 @@ export default {
                 }
             }
 
-
-
             return res.json(users);
         }
         catch (err) {
@@ -88,6 +86,31 @@ export default {
         }
     },
 
+    update: async (req, res) => {
+
+        const { id } = req.params;
+        const { name } = req.body;
+
+        try {
+            const user = await User.findById(id)
+
+            if (user.name === name) return res.status(400).json({ msg: "New name is the same as the previous." });
+
+            user.name = name;
+            await user.save();
+            return res.json({
+                name,
+                msg: `Name of the user sucessfuly updated`
+            });
+        }
+        catch (err) {
+            console.error(err);
+            return res.status(400).json({
+                err,
+                msg: "Unable to locate the user."
+            });
+        }
+    },
     delete: async (req, res) => {
 
         const { id } = req.params;
