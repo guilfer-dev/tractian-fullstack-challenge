@@ -28,7 +28,7 @@ function Admin() {
     const [error, setError] = useState("");
     const [pwModal, setPWModal] = useState(false);
     const [askEditModal, setAskEditModal] = useState(false);
-    const [actionTarget, setActionTarget] = useState("");
+    const [actionTarget, setActionTarget] = useState([]);
     const [modal, setModal] = useState(false);
     const [password, setPassword] = useState("");
     const [showPanel, setShowPanel] = useState(false);
@@ -86,14 +86,29 @@ function Admin() {
         try {
             await api.post("/master", { password });
             action.fn(...action.params);
-            setAction({});
-            setError("");
-            setPassword("");
-            setPWModal(false)
+            clearStates();
+
         }
         catch (err) {
             setError("Unable to authenticate")
         }
+    }
+
+    async function deleteItem(path, id) {
+        await api.delete(`/${path}/${id}`);
+    }
+
+    async function updateItem(path, id, data) {
+        await api.put(`/${path}/${id}`, data)
+    }
+
+    function clearStates() {
+        setAction({});
+        setActionTarget([]);
+        setAskEditModal(false);
+        setError("");
+        setPassword("");
+        setPWModal(false)
     }
 
     return (
@@ -123,7 +138,7 @@ function Admin() {
                                             {users.length > 0 && users.map((e, i) =>
                                                 < tr key={i} onClick={(evt) => {
                                                     const id = evt.target.closest("tr").querySelector(".id").innerHTML;
-                                                    setActionTarget(["user", id]);
+                                                    setActionTarget(["users", id]);
                                                     setAskEditModal(true);
                                                 }}>
                                                     <td>{e.name}</td>
@@ -149,7 +164,7 @@ function Admin() {
                                             {companies.length > 0 && companies.map((e, i) =>
                                                 < tr key={i} onClick={(evt) => {
                                                     const id = evt.target.closest("tr").querySelector(".id").innerHTML;
-                                                    setActionTarget(["user", id]);
+                                                    setActionTarget(["companies", id]);
                                                     setAskEditModal(true);
                                                 }}>
                                                     <td>{e.name}</td>
@@ -175,7 +190,7 @@ function Admin() {
                                             {units.length > 0 && units.map((e, i) =>
                                                 < tr key={i} onClick={(evt) => {
                                                     const id = evt.target.closest("tr").querySelector(".id").innerHTML;
-                                                    setActionTarget(["user", id]);
+                                                    setActionTarget(["units", id]);
                                                     setAskEditModal(true);
                                                 }}>
                                                     <td>{e.name}</td>
@@ -232,10 +247,10 @@ function Admin() {
                         <Modal.Title>ACTION</Modal.Title>
                     </Modal.Header>
                     <Modal.Footer>
-                        <Button variant="secondary" onClick={() => setAskEditModal(false)}>
+                        <Button variant="secondary" onClick={clearStates}>
                             Cancel
                         </Button>
-                        <Button variant="danger" onClick={() => setAskEditModal(false)}>
+                        <Button variant="danger" onClick={() => askPassword(deleteItem, actionTarget)}>
                             Delete
                         </Button>
                         <Button variant="primary" onClick={() => setAskEditModal(false)}>
@@ -254,7 +269,7 @@ function Admin() {
                         <Button variant="secondary" onClick={() => validatePassword()}>
                             Cancel
                         </Button>
-                        <Button variant="danger" onClick={() => navigate("/")}>
+                        <Button variant="danger" onClick={() => setAskEditModal(false)}>
                             Delete
                         </Button>
                         <Button variant="primary" onClick={() => navigate("/")}>

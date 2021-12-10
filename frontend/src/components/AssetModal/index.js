@@ -67,7 +67,7 @@ function ModifyAssetModal({
         try {
 
             if (data._id) {
-                await api.put(`/asset/${data._id}`, form);
+                await api.put(`/assets/${data._id}`, form);
             } else {
                 await api.post(`/units/${unitView._id}`, form);
             }

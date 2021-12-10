@@ -81,7 +81,7 @@ function Main() {
     async function handleDelete(index) {
         const deletion = window.confirm("Você tem certeza sobre deletar essa despesa? A ação não poderá ser desfeita");
         if (deletion) {
-            await api.delete(`/asset/${assets[index]._id}`)
+            await api.delete(`/assets/${assets[index]._id}`)
             const { data } = await api.get(`/units/${unitView._id}/assets`);
             setAssets(data);
         }
