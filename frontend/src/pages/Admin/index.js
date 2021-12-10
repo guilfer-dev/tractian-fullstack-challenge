@@ -32,7 +32,7 @@ function Admin() {
     const [modal, setModal] = useState(false);
     const [password, setPassword] = useState("");
     const [showPanel, setShowPanel] = useState(false);
-    const [tabKey, setTabKey] = useState("");
+    const [tabKey, setTabKey] = useState("users");
     const [action, setAction] = useState({});
     const [users, setUsers] = useState([]);
     const [companies, setCompanies] = useState([]);
@@ -40,7 +40,11 @@ function Admin() {
 
 
     useEffect(() => {
-        askPassword(setShowPanel, [true]);
+        (async () => {
+            askPassword(setShowPanel, [true]);
+            const { data } = await api.get("/users");
+            setUsers(data);
+        })()
     }, [])
 
     useEffect(() => {
@@ -123,7 +127,7 @@ function Admin() {
                                                     setAskEditModal(true);
                                                 }}>
                                                     <td>{e.name}</td>
-                                                    <td>Otto</td>
+                                                    <td>{e.accessToken ? "online" : "offline"}</td>
                                                     <td className="id">{e._id}</td>
                                                 </tr>
                                             )}

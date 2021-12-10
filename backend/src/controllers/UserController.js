@@ -45,8 +45,17 @@ export default {
 
         try {
             const users = await User.find({})
-                .select("name")
-                .populate("company", "name")
+                .populate("company", "name");
+
+            for (let user in users) {
+                if (users[user].accessToken) {
+                    users[user].accessToken = true;
+                } else {
+                    users[user].accessToken = false;
+                }
+            }
+
+
 
             return res.json(users);
         }
