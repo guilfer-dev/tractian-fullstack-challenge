@@ -9,7 +9,7 @@ function AssetCard({ states: {
     data,
     index,
     handleDelete,
-    handleModify
+    handleModal
 } }) {
 
     function parseStatus(status) {
@@ -60,7 +60,7 @@ function AssetCard({ states: {
                             value={data.healthLevel} readOnly />
                     </Card.Text>
                     <div className="d-flex justify-content-evenly">
-                        <Button variant="primary" onClick={() => handleModify(index)}>Modify</Button>
+                        <Button variant="primary" onClick={() => handleModal(data)}>Modify</Button>
                         <Button variant="danger" onClick={() => handleDelete(index)}>Delete</Button>
                     </div>
                 </Card.Body>

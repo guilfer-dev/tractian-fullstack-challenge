@@ -6,13 +6,13 @@ import "./styles.css"
 // services
 import api from "../../../services/api"
 
-function ModifyAssetModal({ states: {
-    showModal,
-    setShowModal,
-    assetData: data,
-    setAssetData: setData,
-    setAssets,
-    unitView } }) {
+function AssetModal({ states: {
+    showAssetModal,
+    setShowAssetModal,
+    getAssetsData,
+    modalData: data,
+    unitView
+} }) {
 
     const [error, setError] = useState("");
 
@@ -36,11 +36,19 @@ function ModifyAssetModal({ states: {
     }, [data])
 
     // close modal and clean states
-    async function handleCloseModal(e) {
+
+    function clearStates() {
+        if (Object.keys(data).length === 0) {
+            setName("");
+            setOwner("");
+            setModel("");
+            setStatus("");
+            setDescription("");
+            setHealthLevel(0);
+        }
         setError("");
-        setData({});
         setImage({});
-        setShowModal(false);
+        setShowAssetModal(false);
     }
 
     async function handleSubmit(e) {
@@ -60,7 +68,6 @@ function ModifyAssetModal({ states: {
 
         // grants that only new data is sent to the endpoint
         for (let item in newData) {
-
             if (newData[item] !== data[item]) {
                 form.append(item, newData[item])
             }
@@ -79,21 +86,22 @@ function ModifyAssetModal({ states: {
             }
 
             //reload assets
-            const { data: assets } = await api.get(`/units/${unitView._id}/assets`);
-            setAssets(assets);
-            setError("");
-            setData({});
-            setImage({});
-            setShowModal(false);
+            getAssetsData();
+            clearStates();
         }
         catch (err) {
             setError("Unable to save changes to the asset")
         }
     }
 
+    async function handleCloseModal() {
+        clearStates();
+    }
+
+
     return (
         // prompt user with a form with asset data to be updated or created
-        <Modal show={showModal} onHide={handleCloseModal}>
+        <Modal show={showAssetModal} onHide={handleCloseModal}>
             <Modal.Header closeButton>
                 <Modal.Title>{data ? "Modify asset" : "New asset"}</Modal.Title>
             </Modal.Header>
@@ -164,4 +172,4 @@ function ModifyAssetModal({ states: {
     );
 }
 
-export default ModifyAssetModal;
+export default AssetModal;

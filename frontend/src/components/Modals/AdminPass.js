@@ -53,7 +53,7 @@ function AdminPass({ states }) {
                         }}
                     /> Show Password
                 </label>
-                <Alert variant="primary" className="error">Test PW: tractian-challange</Alert>
+                <Alert variant="primary" className="error">Test PW: tractian-challenge</Alert>
                 {error && <Alert variant="danger" className="error">{error}</Alert>}
             </Modal.Body>
             <Modal.Footer>

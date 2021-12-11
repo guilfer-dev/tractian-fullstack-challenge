@@ -1,5 +1,5 @@
 // libraries
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Highcharts from "highcharts";
 import HighchartsReact from 'highcharts-react-official'
 import highcharts3d from 'highcharts/highcharts-3d'
@@ -36,57 +36,49 @@ function Main() {
     const [units, setUnits] = useState([])
     const [unitView, setUnitView] = useState("all")
     const [assets, setAssets] = useState([])
-    const [showModal, setShowModal] = useState(false);
-    const [assetData, setAssetData] = useState({});
+    const [showAssetModal, setShowAssetModal] = useState(false);
+    const [modalData, setModalData] = useState({});
+
+
     const company = JSON.parse(localStorage.getItem("company"))
 
     // fetch units data from the api
     useEffect(() => {
-        async function getData() {
+        (async () => {
             if (company._id) {
                 const { data: { units } } = await api.get(`/companies/${company._id}`);
                 setUnits(units);
             }
-        }
-
-        getData();
-
+        })();
     }, [company._id])
+
+    const getAssetsData = useCallback(async function () {
+        if (unitView === "all" && company._id) {
+            const { data: assets } = await api.get(`/${company._id}/all-assets`);
+            setAssets(assets);
+        } else if (unitView._id) {
+            const { data: assets } = await api.get(`/units/${unitView._id}/assets`);
+            setAssets(assets);
+        }
+    }, [unitView, company._id])
 
     // fetch assets data from the api
     useEffect(() => {
-        async function getData() {
-            if (unitView === "all" && company._id) {
-                const { data: assets } = await api.get(`/${company._id}/all-assets`);
-                setAssets(assets);
-            } else if (unitView._id) {
-                const { data: assets } = await api.get(`/units/${unitView._id}/assets`);
-                setAssets(assets);
-            }
-        }
-
-        getData();
-
-    }, [unitView, company._id])
+        getAssetsData();
+    }, [getAssetsData, unitView, company._id])
 
     async function handleDelete(index) {
         const deletion = window.confirm("Você tem certeza sobre deletar essa despesa? A ação não poderá ser desfeita");
         if (deletion) {
             await api.delete(`/assets/${assets[index]._id}`)
-            const { data } = await api.get(`/units/${unitView._id}/assets`);
+            const { data } = await api.get(`/units/${assets[index].unit}/assets`);
             setAssets(data);
         }
     }
 
-    async function handleModify(index) {
-        setShowModal(true);
-        setAssetData(assets[index])
-
-    }
-
-    function handleNewAsset() {
-        setShowModal(true);
-        setAssetData(false);
+    function handleModal(data) {
+        setShowAssetModal(true);
+        setModalData(data || {});
     }
 
     return (
@@ -123,11 +115,15 @@ function Main() {
                     </Tab>
                     <Tab eventKey="assets" title="Assets" >
                         {/* show button to add new asset only when user is on a a unit tab */}
-                        {unitView !== "all" && <Button className="add-new-asset-btn" onClick={handleNewAsset}>Add new asset</Button>}
+
+                        {unitView !== "all" &&
+                            <Button className="add-new-asset-btn"
+                                onClick={() => handleModal()}>Add new asset</Button>}
+
                         <Container className="cards-container">
                             {/* programmatically loads cards with asssets */}
                             {assets.length > 0 ? assets.map((e, i) => (
-                                <AssetCard states={{ data: e, index: i, handleDelete, handleModify }} key={`card-${i}`} />
+                                <AssetCard states={{ data: e, index: i, handleDelete, handleModal }} key={`card-${i}`} />
                             )) :
                                 "Network failure or there are no assets available for this unit"
                             }
@@ -137,12 +133,11 @@ function Main() {
             </Container>
             <AssetModal
                 states={{
-                    showModal,
-                    setShowModal,
-                    assetData,
-                    setAssetData,
-                    setAssets,
-                    unitView
+                    showAssetModal,
+                    setShowAssetModal,
+                    getAssetsData,
+                    unitView,
+                    modalData
                 }} />
         </>
 
