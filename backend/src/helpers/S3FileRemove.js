@@ -1,7 +1,7 @@
 import { S3 } from "@aws-sdk/client-s3";
-import "dotenv/config"
+import config from "../config.js"
 
-const S3_BUCKET = process.env.S3_BUCKET;
+const S3_BUCKET = config.S3_BUCKET;
 const s3 = new S3({
     region: "sa-east-1"
 });
