@@ -1,12 +1,13 @@
 import { Router } from "express";
 import CompanyController from "../controllers/CompanyController.js";
 
+import validateMaster from "../middlewares/validateMaster.js";
+
 const route = Router();
 
-route.post('/new-company', CompanyController.create);
-route.get('/companies', CompanyController.index);
-route.get('/companies/:id', CompanyController.show);
-route.put('/companies/:id', CompanyController.update);
-route.delete('/companies/:id', CompanyController.delete);
+route.post('/new-company', validateMaster, CompanyController.create);
+route.get('/companies', validateMaster, CompanyController.index);
+route.put('/companies/:id', validateMaster, CompanyController.update);
+route.delete('/companies/:id', validateMaster, CompanyController.delete);
 
 export default route;

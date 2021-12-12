@@ -40,26 +40,6 @@ export default {
         }
     },
 
-    show: async (req, res) => {
-
-        const { id } = req.params;
-
-        try {
-            const company = await Company.findById(id)
-                .populate("units", "name")
-                .populate("users", "name");
-
-            return res.json(company);
-        }
-        catch (err) {
-            console.error(err);
-            return res.status(400).json({
-                err,
-                msg: "Unable to locate the company."
-            });
-        }
-    },
-
     update: async (req, res) => {
 
         const { id } = req.params

@@ -59,26 +59,6 @@ export default {
         }
     },
 
-    show: async (req, res) => {
-
-        const { id } = req.params
-
-        try {
-            const user = await User.findById(id)
-                .select("-__v")
-                .populate("company", "name")
-
-            return res.json(user);
-        }
-        catch (err) {
-            console.error(err);
-            return res.status(400).json({
-                err,
-                msg: "Unable to locate the user."
-            });
-        }
-    },
-
     update: async (req, res) => {
 
         const { id } = req.params;
@@ -104,6 +84,7 @@ export default {
             });
         }
     },
+    
     delete: async (req, res) => {
 
         const { id } = req.params;
