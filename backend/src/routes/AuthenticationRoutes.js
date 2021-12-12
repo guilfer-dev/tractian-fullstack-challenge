@@ -13,7 +13,7 @@ const route = Router();
 // authentication routes
 route.post('/login', AuthenticationController.login);
 route.get('/logout', validateToken, AuthenticationController.logout);
-route.post('/master', validateMaster, AuthenticationController.master);
+route.get('/master', validateMaster, AuthenticationController.master);
 route.get('/me', validateToken, AuthenticationController.me);
 
 export default route;
