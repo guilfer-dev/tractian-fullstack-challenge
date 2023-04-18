@@ -120,7 +120,7 @@ export default {
             const unit = await Unit.findById(asset.unit);
             unit.assets.pull(id);
             await unit.save();
-            return res.json("Asset sucessfuly removed");
+            return res.json("Asset successfully removed");
         }
         catch (err) {
             console.error(err);
